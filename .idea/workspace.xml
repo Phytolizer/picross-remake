@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f8400f71-c14b-4c69-b353-93f7d37baf30" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/common/Button.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/common/KeyInterface.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/picross/GameWindow.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/picross/KeyListener.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/picross/Picross.java" />
+    <list default="true" id="f8400f71-c14b-4c69-b353-93f7d37baf30" name="Default" comment="Began work">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/common/Background.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/common/BetterFrame.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/common/Constants.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/common/DrawingTools.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/common/Graphics.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/common/Motion.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/common/RandomColorGenerator.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/common/Resizer.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/common/Timer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -102,6 +107,16 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="238">
+              <caret line="14" column="4" lean-forward="false" selection-start-line="14" selection-start-column="4" selection-end-line="14" selection-end-column="4" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="Button.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/common/Button.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -136,16 +151,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="RandomColorGenerator.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/common/RandomColorGenerator.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="7" column="13" lean-forward="false" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
     </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
@@ -172,7 +177,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/src/common/BetterFrame.java" />
         <option value="$PROJECT_DIR$/src/common/Timer.java" />
         <option value="$PROJECT_DIR$/src/common/RandomColorGenerator.java" />
@@ -187,6 +191,7 @@
         <option value="$PROJECT_DIR$/src/common/Graphics.java" />
         <option value="$PROJECT_DIR$/src/common/Button.java" />
         <option value="$PROJECT_DIR$/src/picross/GameWindow.java" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -698,7 +703,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1486082691765</updated>
-      <workItem from="1486082694161" duration="3795000" />
+      <workItem from="1486082694161" duration="3904000" />
     </task>
     <task id="LOCAL-00001" summary="edited gitignore">
       <created>1486082892410</created>
@@ -707,11 +712,18 @@
       <option name="project" value="LOCAL" />
       <updated>1486082892410</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Began work">
+      <created>1486086498946</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1486086498946</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="3795000" />
+    <option name="totallyTimeSpent" value="3904000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="0" />
@@ -756,7 +768,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="edited gitignore" />
-    <option name="LAST_COMMIT_MESSAGE" value="edited gitignore" />
+    <MESSAGE value="Began work" />
+    <option name="LAST_COMMIT_MESSAGE" value="Began work" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -769,14 +782,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="13" column="5" lean-forward="true" selection-start-line="13" selection-start-column="5" selection-end-line="13" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/common/Timer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
@@ -898,6 +903,14 @@
             <element signature="e#2640#2641#0" expanded="true" />
             <element signature="n#!!doc;n#windowOpened#0;n#Graphics#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="14" column="4" lean-forward="false" selection-start-line="14" selection-start-column="4" selection-end-line="14" selection-end-column="4" />
+          <folding />
         </state>
       </provider>
     </entry>

@@ -3,6 +3,7 @@ package picross;
 import common.Background;
 import common.DrawingTools;
 import common.Graphics;
+import common.Button;
 
 import java.awt.*;
 
@@ -18,7 +19,8 @@ public class GameWindow extends Graphics {
 		super("Picross");
 		frame.setKeyHandler(kl);
 		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-		b = new Button();
+		b = new Button(200, 100);
+		b.setText("Start Gayme");
 	}
 	@Override
 	public void run(){
@@ -47,7 +49,7 @@ public class GameWindow extends Graphics {
 		/*setFont(new Font("Arial", Font.PLAIN, 20));
 		DrawingTools.drawCenteredText(f, "" + frame.mouseX + ", " + frame.mouseY, width / 2, height / 2, art);*/
 		//endregion
-		b.draw(width / 2, height / 2, this);//TODO figure this one out
+		b.draw(width / 2, height / 2, this);
 
 		endDraw();
 	}

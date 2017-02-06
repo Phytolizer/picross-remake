@@ -37,7 +37,7 @@ public class DrawingTools {
 
 	public static void drawTextAround(Font f, String str, int x, int y, Graphics2D g2d) {
 		int len = g2d.getFontMetrics(f).stringWidth(str);
-		int height = g2d.getFontMetrics(f).getHeight();
+		int height = f.getSize();
 		int new_x = x - len / 2;
 		int new_y = y + height / 2;
 		g2d.drawString(str, new_x, new_y);

@@ -1,5 +1,6 @@
 package mygl;
 
+
 /**
  * Created by mario on 4/11/2017.
  */
@@ -7,13 +8,11 @@ public class Element {
 	protected int x, y;
 	protected int width, height;
 	protected Graphics graphics;
-
-	public Element() {
-
-	}
+	protected Updater updater;
 
 	public Element(Graphics graphics) {
 		this.graphics = graphics;
+		Elements.add(this);
 	}
 
 	public int getX() {
@@ -48,7 +47,26 @@ public class Element {
 		this.height = height;
 	}
 
+	public Graphics getGraphics() {
+		return graphics;
+	}
+
 	public void draw() {
 
+	}
+
+	protected void update() {
+		if (updater != null)
+			updater.update();
+	}
+
+	/**
+	 * Gives the Element an Updater. <br/>The Updater is called every frame with the Element as a parameter,
+	 * and the implementation provided when this setter is used will be run. This may cause performance issues
+	 * in large programs.
+	 * @param updateAction the implemented Updater to be called when this Element updates
+	 */
+	public void setOnUpdateAction(Updater updateAction) {
+		updater = updateAction;
 	}
 }

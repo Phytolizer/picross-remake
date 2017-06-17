@@ -26,11 +26,14 @@ public class GameWindow extends Graphics {
 	}
 
 	private void initButtons() {
-		b = new ButtonElement(width / 2, height / 2, 200, 100, this); //TODO add ability to make Button dynamically centered in the window
+		b = new ButtonElement(width / 2, height / 2, 200, 100, this);
 		b.setText("Start Gayme");
 		b.setColor(Color.GREEN);
 		b.setClickListener(() -> {
 			System.out.println("You clicked the button. You Win!");
+		});
+		b.setOnUpdateAction(() -> {
+			b.setX(width / 2);
 		});
 	}
 

@@ -12,7 +12,7 @@ import java.util.Objects;
  */
 public class TextEntryElement extends Element {
 	/**
-	 * The cursor will flash once every [flashPeriod] milliseconds.
+	 * The cursor will flash once every <code>flashPeriod</code> milliseconds.
 	 */
 	private final short flashPeriod = 750;
 	private String text;

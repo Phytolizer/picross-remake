@@ -12,7 +12,7 @@ import java.awt.image.BufferedImage;
  */
 public class Graphics implements Runnable, WindowListener, WindowFocusListener {
 	protected final int WINDOW_BAR_HEIGHT = 30;
-	protected int width = 800, height = 600;
+	public int width = 800, height = 600;
 	protected BetterFrame frame;
 	protected Font f;
 	protected Graphics2D graphics2D;
@@ -49,6 +49,7 @@ public class Graphics implements Runnable, WindowListener, WindowFocusListener {
 		while (running) {
 			mouseActions();
 			runActions();
+			Elements.update();
 			try {
 				Thread.sleep(sleepInterval);
 			} catch (InterruptedException e) {

@@ -93,6 +93,7 @@ public class Graphics implements Runnable, WindowListener, WindowFocusListener {
 	protected void draw() {
 		startDraw();
 		drawActions();
+		Elements.draw();
 		endDraw();
 	}
 

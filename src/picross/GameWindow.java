@@ -26,6 +26,7 @@ public class GameWindow extends Graphics {
 	}
 
 	private void initButtons() {
+		//b is a perfectly centered ButtonElement. No matter what, B will be at the center of the screen.
 		b = new ButtonElement(width / 2, height / 2, 200, 100, this);
 		b.setText("Start Gayme");
 		b.setColor(Color.GREEN);
@@ -34,7 +35,9 @@ public class GameWindow extends Graphics {
 		});
 		b.setOnUpdateAction(() -> {
 			b.setX(width / 2);
+			b.setY(height / 2);
 		});
+		b.setVisible(true);
 	}
 
 	@Override
@@ -60,6 +63,6 @@ public class GameWindow extends Graphics {
 		/*setFont(new Font("Arial", Font.PLAIN, 20));
 		DrawingTools.drawCenteredText(f, "" + frame.mouseX + ", " + frame.mouseY, width / 2, height / 2, art);*/
 		//endregion
-		b.draw();
+		//b.draw();
 	}
 }

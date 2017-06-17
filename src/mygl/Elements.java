@@ -16,4 +16,11 @@ public class Elements {
 	public static void add(Element e) {
 		all_elements.add(e);
 	}
+	public static void draw() {
+		for(Element e : all_elements) {
+			if(e.isVisible()) {
+				e.draw();
+			}
+		}
+	}
 }

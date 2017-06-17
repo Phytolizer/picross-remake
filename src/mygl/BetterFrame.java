@@ -1,4 +1,4 @@
-package common;
+package mygl;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -8,10 +8,12 @@ import java.awt.event.*;
  */
 public class BetterFrame extends Frame implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener {
 	public int mouseX, mouseY;
+	public int scrollAmt;
 	private boolean clicking;
-	private int mouseButton = - 1;
+	private int mouseButton = -1;
 	private String name;
 	private KeyInterface keyHandler;
+	private boolean hasClicked;
 
 	/**
 	 * Creates a new BetterFrame.
@@ -58,7 +60,8 @@ public class BetterFrame extends Frame implements MouseListener, MouseMotionList
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		clicking = false;
-		mouseButton = - 1;
+		hasClicked = true;
+		mouseButton = -1;
 	}
 
 	@Override
@@ -85,7 +88,7 @@ public class BetterFrame extends Frame implements MouseListener, MouseMotionList
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
-
+		scrollAmt = e.getWheelRotation();
 	}
 
 	/**
@@ -108,5 +111,18 @@ public class BetterFrame extends Frame implements MouseListener, MouseMotionList
 
 	public void setKeyHandler(KeyInterface kh) {
 		keyHandler = kh;
+	}
+
+	public boolean hasClicked() {
+		return hasClicked;
+	}
+
+	public void setHasClicked(boolean hasClicked) {
+		this.hasClicked = hasClicked;
+	}
+
+	@Override
+	public String getName() {
+		return name;
 	}
 }

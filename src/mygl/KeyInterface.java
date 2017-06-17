@@ -1,4 +1,4 @@
-package common;
+package mygl;
 
 import java.awt.event.KeyEvent;
 
@@ -7,5 +7,6 @@ import java.awt.event.KeyEvent;
  */
 public interface KeyInterface {
 	void pressKey(KeyEvent e);
+
 	void releaseKey(KeyEvent e);
 }

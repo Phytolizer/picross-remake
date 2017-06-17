@@ -1,4 +1,4 @@
-package common;
+package mygl;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -66,9 +66,6 @@ public enum Resizer {
 		}
 	};
 
-	public abstract BufferedImage resize(BufferedImage source,
-	                                     int width, int height);
-
 	private static BufferedImage progressiveResize(BufferedImage source,
 	                                               int width, int height, Object hint) {
 		int w = Math.max(source.getWidth() / 2, width);
@@ -97,4 +94,7 @@ public enum Resizer {
 		}
 		return img;
 	}
+
+	public abstract BufferedImage resize(BufferedImage source,
+	                                     int width, int height);
 }

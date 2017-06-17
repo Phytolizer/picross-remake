@@ -1,6 +1,7 @@
-package common;
+package mygl;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.awt.event.WindowListener;
@@ -10,13 +11,14 @@ import java.awt.image.BufferedImage;
  * @author onContentStop
  */
 public class Graphics implements Runnable, WindowListener, WindowFocusListener {
-	public final int WINDOW_BAR_HEIGHT = 30;
-	public boolean running, done, visible;
-	public int width = 800, height = 600;
-	public BetterFrame frame;
-	public Image imgBuffer;
-	public Font f;
-	public Graphics2D art;
+	protected final int WINDOW_BAR_HEIGHT = 30;
+	protected int width = 800, height = 600;
+	protected BetterFrame frame;
+	protected Font f;
+	protected Graphics2D graphics2D;
+	private boolean running, done, visible;
+	private Image imgBuffer;
+	private short sleepInterval;
 
 	public Graphics() {
 		frame = new BetterFrame("Frame", new Dimension(width, height));
@@ -38,10 +40,28 @@ public class Graphics implements Runnable, WindowListener, WindowFocusListener {
 		frame.addWindowListener(this);
 		frame.addWindowFocusListener(this);
 		visible = false;
+		sleepInterval = 10;
+		imgBuffer = frame.createImage(width, height);
 	}
 
 	@Override
 	public void run() {
+		while (running) {
+			mouseActions();
+			runActions();
+			try {
+				Thread.sleep(sleepInterval);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	protected void mouseActions() {
+
+	}
+
+	protected void runActions() {
 
 	}
 
@@ -53,21 +73,60 @@ public class Graphics implements Runnable, WindowListener, WindowFocusListener {
 	}
 
 	public void startDraw() {
-		art = (Graphics2D) imgBuffer.getGraphics();
-		art.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		art.setFont(new Font("Arial", Font.PLAIN, 50));
-		f = art.getFont();
+		graphics2D = (Graphics2D) imgBuffer.getGraphics();
+		graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		graphics2D.setFont(new Font("Arial", Font.PLAIN, 50));
+		f = graphics2D.getFont();
 	}
 
 	public void endDraw() {
-		art = (Graphics2D) frame.getGraphics();
-		if (art != null) {
+		graphics2D = (Graphics2D) frame.getGraphics();
+		if (graphics2D != null) {
 			imgBuffer = Resizer.PROGRESSIVE_BILINEAR.resize((BufferedImage) imgBuffer, width, height);
-			art.drawImage(imgBuffer, 0, 0, width, height, 0, 0, width, height, null);
-			art.dispose();
+			graphics2D.drawImage(imgBuffer, 0, 0, width, height, 0, 0, width, height, null);
+			graphics2D.dispose();
 		}
 	}
 
+	protected void draw() {
+		startDraw();
+		drawActions();
+		endDraw();
+	}
+
+	protected void drawActions() {
+
+	}
+
+	public BetterFrame getFrame() {
+		return frame;
+	}
+
+	public void setVisible(boolean visible) {
+		frame.setVisible(visible);
+		if (visible)
+			imgBuffer = frame.createImage(width, height);
+		this.visible = visible;
+	}
+
+	public Graphics2D getGraphics2D() {
+		return graphics2D;
+	}
+
+	public Font getFont() {
+		return f;
+	}
+
+	public void setFont(Font font) {
+		graphics2D.setFont(font);
+	}
+
+	//region unused overrides
+	@Override
+	public void windowOpened(WindowEvent e) {
+
+	}
 
 	@Override
 	public void windowClosing(WindowEvent e) {
@@ -86,35 +145,6 @@ public class Graphics implements Runnable, WindowListener, WindowFocusListener {
 		} catch (InterruptedException e1) {
 			//e1.printStackTrace();
 		}
-	}
-
-	public BetterFrame getFrame() {
-		return frame;
-	}
-
-	public void setVisible(boolean visible) {
-		frame.setVisible(visible);
-		if (visible)
-			imgBuffer = frame.createImage(width, height);
-		this.visible = visible;
-	}
-
-	public void setFont(Font font) {
-		art.setFont(font);
-	}
-
-	public Graphics2D getGraphics() {
-		return art;
-	}
-
-	public Font getFont() {
-		return f;
-	}
-
-	//region unused overrides
-	@Override
-	public void windowOpened(WindowEvent e) {
-
 	}
 
 	@Override
@@ -148,4 +178,12 @@ public class Graphics implements Runnable, WindowListener, WindowFocusListener {
 
 	}
 	//endregion
+
+	public void setFrameSleepInterval(short sleepInterval) {
+		this.sleepInterval = sleepInterval;
+	}
+
+	public void handleKey(KeyEvent e) {
+
+	}
 }

@@ -11,13 +11,50 @@ import java.awt.image.BufferedImage;
  * @author onContentStop
  */
 public class Graphics implements Runnable, WindowListener, WindowFocusListener {
+	/**
+	 * The height of the title bar in most operating systems. If this isn't true for all operating systems, tell me.
+	 */
 	protected final int WINDOW_BAR_HEIGHT = 30;
-	public int width = 800, height = 600;
+	/**
+	 * The width of the {@link Graphics#frame} that Graphics owns. Should be updated whenever the frame is resized.
+	 */
+	public int width = 800;
+	/**
+	 * The height of the {@link Graphics#frame} that Graphics owns. Should be updated whenever the frame is resized.
+	 */
+	public int height = 600;
+	/**
+	 * A {@link BetterFrame frame} that will be used to show the graphics on screen. Uses a modified version of the {@link Frame} class.
+	 */
 	protected BetterFrame frame;
+	/**
+	 * The {@link Font} to be used when drawing text. This is placed in a variable so that it is easier to access than using graphics2D.getFont()
+	 */
 	protected Font f;
+	/**
+	 * This is what everything is actually drawn onto. It is resized to fit its {@link Graphics#frame} frequently.
+	 */
 	protected Graphics2D graphics2D;
-	private boolean running, done, visible;
+	/**
+	 * A flag that stores whether this Graphics instance is meant to be active.
+	 */
+	private boolean running;
+	/**
+	 * A flag that stores whether the Graphics has stopped drawing so that the {@link Graphics#frame} can be removed.
+	 */
+	private boolean done;
+	/**
+	 * A flag that stores whether the {@link Graphics#frame} is currently being shown on screen. If it is not, nothing will be drawn.
+	 */
+	private boolean visible;
+	/**
+	 * An {@link Image} that {@link Graphics#graphics2D} is pasted onto before being shown on screen. This prevents flickering, as would be seen
+	 * if the graphics2D was pushed directly to the screen.
+	 */
 	private Image imgBuffer;
+	/**
+	 * The length of time between frames.
+	 */
 	private short sleepInterval;
 
 	public Graphics() {
@@ -50,6 +87,7 @@ public class Graphics implements Runnable, WindowListener, WindowFocusListener {
 			mouseActions();
 			runActions();
 			Elements.update();
+			updateSize();
 			try {
 				Thread.sleep(sleepInterval);
 			} catch (InterruptedException e) {

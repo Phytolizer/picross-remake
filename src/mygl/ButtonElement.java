@@ -126,8 +126,10 @@ public class ButtonElement extends Element {
 						graphics2D));
 		graphics2D.setFont(f);
 
+		int trueX = DrawingTools.getTrueX(x, width, alignX);
+		int trueY = DrawingTools.getTrueY(y, height, alignY);
 		//check bounds
-		setHovering(isInBounds(mouseX, mouseY, x - width / 2, y - height / 2));
+		setHovering(isInBounds(mouseX, mouseY, trueX, trueY));
 		if (!graphics.getFrame().clicking() && clicking) {
 			onClick();
 		}
@@ -140,8 +142,8 @@ public class ButtonElement extends Element {
 		DrawingTools.fillRect(x, y, width, height, alignX, alignY, graphics2D);
 		graphics2D.setColor(textColor);
 		DrawingTools.drawRect(x, y, width, height, alignX, alignY, graphics2D);
-		int centerX = DrawingTools.getTrueX(x, width, alignX) + width / 2;
-		int centerY = DrawingTools.getTrueY(y, height, alignY) + height / 2;
+		int centerX = trueX + width / 2;
+		int centerY = trueY + height / 2;
 		DrawingTools.drawTextAround(f, text, centerX, centerY, graphics2D);
 	}
 

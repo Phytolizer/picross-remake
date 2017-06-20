@@ -25,6 +25,7 @@ public class GameWindow extends Graphics {
 		bgTimer.start();
 		background = new Background(100, bgTimer, 10000); //This background will choose random colors and shift between them smoothly every 10 seconds.
 		initButtons();
+		setFrameSleepInterval((short) ((double) 1000 / maxFPS));
 	}
 
 	private void initButtons() {
@@ -52,24 +53,23 @@ public class GameWindow extends Graphics {
 			if (height < necessaryHeight) {
 				newMenuButtonHeight = (int) (changeFactor * menuButtonHeight);
 				newMenuButtonPad = (int) (changeFactor * menuButtonPad);
-				bStartGame.setHeight(newMenuButtonHeight);
 				bStartGame.setY(necessaryTopPad);
 			} else {
-				bStartGame.setY(necessaryTopPad + clearSpace / numMenuButtons);
+				bStartGame.setY(necessaryTopPad + clearSpace / 2);
 			}
+			bStartGame.setHeight(newMenuButtonHeight);
 
 			bLeaderboard.setX(width / 2);
-			if(height < necessaryHeight) {
-				bLeaderboard.setHeight(newMenuButtonHeight);
-			}
+			bLeaderboard.setHeight(newMenuButtonHeight);
 			bLeaderboard.setY(bStartGame.getY() + newMenuButtonHeight + newMenuButtonPad);
 
 			bCreator.setX(width / 2);
-			if(height < necessaryHeight) {
-				bCreator.setHeight(newMenuButtonHeight);
-			}
+			bCreator.setHeight(newMenuButtonHeight);
 			bCreator.setY(bStartGame.getY() + 2 * (newMenuButtonHeight + newMenuButtonPad));
-		});
+		});/*Note that when bStartGame is not visible, *none* of the menu buttons will be moved because their recalculation depends on bStartGame being updated.
+			This should not be a problem as long as bStartGame is visible when the other buttons should be.
+			If this is a problem, pls fix.
+		*/
 		bStartGame.setVisible(true); //Now the button will be drawn and updated on screen!
 
 		bLeaderboard = new ButtonElement(width / 2, height / 2 + menuButtonHeight + menuButtonPad, 200, menuButtonHeight, this);
@@ -87,15 +87,8 @@ public class GameWindow extends Graphics {
 
 	@Override
 	public void runActions() {
-		updateSize(); //TODO move this to Graphics, it's such a necessity that I should have done it yesterday.
 		background.update(); //This allows the background color to change continuously. (Discretely, but with small enough steps it looks continuous.)
 		draw(); //I'm not explaining this. Just no. There is no way the function is not clear. It draws stuff.
-		try {
-			//This should cause the framerate to max out at maxFPS, though in reality it probably won't reach that value because my code bad.
-			Thread.sleep((long) (1000d / (double) maxFPS));
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 	}
 
 	protected void drawActions() {

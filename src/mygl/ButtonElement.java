@@ -29,6 +29,8 @@ public class ButtonElement extends Element {
 		y = 0;
 		width = 100;
 		height = 100;
+		alignX = Align.CENTER_HORIZONTAL;
+		alignY = Align.CENTER_VERTICAL;
 	}
 
 	public ButtonElement(int x, int y, int width, int height, Graphics graphics) {
@@ -40,6 +42,8 @@ public class ButtonElement extends Element {
 		this.y = y;
 		this.width = width;
 		this.height = height;
+		alignX = Align.CENTER_HORIZONTAL;
+		alignY = Align.CENTER_VERTICAL;
 	}
 
 	public ButtonElement(int x, int y, int width, int height, Color backgroundColor, Graphics graphics) {
@@ -51,6 +55,8 @@ public class ButtonElement extends Element {
 		this.y = y;
 		this.width = width;
 		this.height = height;
+		alignX = Align.CENTER_HORIZONTAL;
+		alignY = Align.CENTER_VERTICAL;
 	}
 
 	public void setHovering(boolean hovering) {
@@ -129,12 +135,14 @@ public class ButtonElement extends Element {
 
 		//actual drawing
 		graphics2D.setColor(color);
-		DrawingTools.fillRectAround(x, y, width, height, graphics2D);
+		DrawingTools.fillRect(x, y, width, height, alignX, alignY, graphics2D);
 		graphics2D.setColor(coverColor);
-		DrawingTools.fillRectAround(x, y, width, height, graphics2D);
+		DrawingTools.fillRect(x, y, width, height, alignX, alignY, graphics2D);
 		graphics2D.setColor(textColor);
-		DrawingTools.drawRectAround(x, y, width, height, graphics2D);
-		DrawingTools.drawTextAround(f, text, x, y, graphics2D);
+		DrawingTools.drawRect(x, y, width, height, alignX, alignY, graphics2D);
+		int centerX = DrawingTools.getTrueX(x, width, alignX) + width / 2;
+		int centerY = DrawingTools.getTrueY(y, height, alignY) + height / 2;
+		DrawingTools.drawTextAround(f, text, centerX, centerY, graphics2D);
 	}
 
 	public void setTextColor(Color textColor) {

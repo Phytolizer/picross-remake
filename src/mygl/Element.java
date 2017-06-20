@@ -7,6 +7,8 @@ package mygl;
 public class Element {
 	protected int x, y;
 	protected int width, height;
+	protected Align alignX;
+	protected Align alignY;
 	protected Graphics graphics;
 	protected Updater updater;
 	/**
@@ -19,6 +21,7 @@ public class Element {
 		Elements.add(this);
 	}
 
+	//region getters and setters
 	public int getX() {
 		return x;
 	}
@@ -51,7 +54,6 @@ public class Element {
 		this.height = height;
 	}
 
-
 	public boolean isVisible() {
 		return isVisible;
 	}
@@ -60,9 +62,22 @@ public class Element {
 		isVisible = visible;
 	}
 
-	public Graphics getGraphics() {
-		return graphics;
+	public Align getAlignX() {
+		return alignX;
 	}
+
+	public void setAlignX(Align alignX) {
+		this.alignX = alignX;
+	}
+
+	public Align getAlignY() {
+		return alignY;
+	}
+
+	public void setAlignY(Align alignY) {
+		this.alignY = alignY;
+	}
+	//endregion
 
 	public void draw() {
 

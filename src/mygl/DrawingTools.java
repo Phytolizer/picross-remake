@@ -56,9 +56,21 @@ public class DrawingTools {
 		g2d.drawRect(realX, realY, sizeX, sizeY);
 	}
 
+	public static void drawRect(int x, int y, int sizeX, int sizeY, Align alignX, Align alignY, Graphics2D g2d) {
+		int realX = getTrueX(x, sizeX, alignX);
+		int realY = getTrueY(y, sizeY, alignY);
+		g2d.drawRect(realX, realY, sizeX, sizeY);
+	}
+
 	public static void fillRectAround(int x, int y, int sizeX, int sizeY, Graphics2D g2d) {
 		int realX = x - sizeX / 2;
 		int realY = y - sizeY / 2;
+		g2d.fillRect(realX, realY, sizeX, sizeY);
+	}
+
+	public static void fillRect(int x, int y, int sizeX, int sizeY, Align alignX, Align alignY, Graphics2D g2d) {
+		int realX = getTrueX(x, sizeX, alignX);
+		int realY = getTrueY(y, sizeY, alignY);
 		g2d.fillRect(realX, realY, sizeX, sizeY);
 	}
 
@@ -136,7 +148,7 @@ public class DrawingTools {
 		return null;
 	}
 
-	private static int getTrueX(int x, int width, Align align) {
+	public static int getTrueX(int x, int width, Align align) {
 		int newX;
 		switch (align) {
 			case LEFT:
@@ -154,7 +166,7 @@ public class DrawingTools {
 		return newX;
 	}
 
-	private static int getTrueY(int y, int height, Align align) {
+	public static int getTrueY(int y, int height, Align align) {
 		int newY;
 		switch (align) {
 			case TOP:

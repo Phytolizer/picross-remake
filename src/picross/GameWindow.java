@@ -13,7 +13,8 @@ public class GameWindow extends Graphics {
 	private final int TOP_BAR_HEIGHT = 30;
 	private Background background;
 	private ButtonElement bStartGame;
-	private ButtonElement bAnotherOne;
+	private ButtonElement bLeaderboard;
+	private ButtonElement bCreator;
 
 	public GameWindow(KeyListener kl) {
 		super("Picross"); //Sets things up. If you want details, look in Graphics, it's too much to explain here.
@@ -30,7 +31,7 @@ public class GameWindow extends Graphics {
 		int menuButtonHeight = 100;
 		int menuButtonPad = 25;
 		int necessaryTopPad = 120;
-		int numMenuButtons = 2;
+		int numMenuButtons = 3;
 		//bStartGame is a perfectly centered ButtonElement. No matter what, B will be at the center of the screen.
 		bStartGame = new ButtonElement(width / 2, height / 2, 200, menuButtonHeight, this); //Initializes the button with a position, size and graphics context.
 		bStartGame.setText("Start Gayme"); //The text to display on the button goes here. The size of this text will be determined automatically by a process unknown to humankind.
@@ -42,34 +43,46 @@ public class GameWindow extends Graphics {
 		bStartGame.setAlignY(Align.TOP); //sets the button to be drawn from the top down rather than out from the center, i.e its y-coordinate is that of its top border
 		bStartGame.setOnUpdateAction(() -> { //the update action of bStartGame also moves all subsequent buttons in the main menu, to prevent unnecessary recalculation
 			int necessaryHeight = necessaryTopPad + numMenuButtons * menuButtonHeight + (numMenuButtons - 1) * menuButtonPad;
-			int newMenuButtonHeight, newMenuButtonPad;
+			int newMenuButtonHeight = menuButtonHeight, newMenuButtonPad = menuButtonPad;
 			int clearSpace = height - necessaryTopPad - numMenuButtons * menuButtonHeight - (numMenuButtons - 1) * menuButtonPad;
 			int buttonSpace = height - necessaryTopPad;
 			int spacePerButton = buttonSpace / numMenuButtons;
 			double changeFactor = (double) spacePerButton / (menuButtonHeight + menuButtonPad);
-			newMenuButtonHeight = (int) (changeFactor * menuButtonHeight);
-			newMenuButtonPad = (int) (changeFactor * menuButtonPad);
 			bStartGame.setX(width / 2);
 			if (height < necessaryHeight) {
+				newMenuButtonHeight = (int) (changeFactor * menuButtonHeight);
+				newMenuButtonPad = (int) (changeFactor * menuButtonPad);
 				bStartGame.setHeight(newMenuButtonHeight);
 				bStartGame.setY(necessaryTopPad);
 			} else {
 				bStartGame.setY(necessaryTopPad + clearSpace / numMenuButtons);
 			}
-			bAnotherOne.setX(width / 2);
+
+			bLeaderboard.setX(width / 2);
 			if(height < necessaryHeight) {
-				bAnotherOne.setHeight(newMenuButtonHeight);
-				bAnotherOne.setY(bStartGame.getY() + newMenuButtonHeight + newMenuButtonPad);
-			} else {
-				bAnotherOne.setY(bStartGame.getY() + menuButtonHeight + menuButtonPad);
+				bLeaderboard.setHeight(newMenuButtonHeight);
 			}
+			bLeaderboard.setY(bStartGame.getY() + newMenuButtonHeight + newMenuButtonPad);
+
+			bCreator.setX(width / 2);
+			if(height < necessaryHeight) {
+				bCreator.setHeight(newMenuButtonHeight);
+			}
+			bCreator.setY(bStartGame.getY() + 2 * (newMenuButtonHeight + newMenuButtonPad));
 		});
 		bStartGame.setVisible(true); //Now the button will be drawn and updated on screen!
-		bAnotherOne = new ButtonElement(width / 2, height / 2 + menuButtonHeight + menuButtonPad, 200, menuButtonHeight, this);
-		bAnotherOne.setText("Leaderboard");
-		bAnotherOne.setColor(Color.ORANGE);
-		bAnotherOne.setAlignY(Align.TOP);
-		bAnotherOne.setVisible(true);
+
+		bLeaderboard = new ButtonElement(width / 2, height / 2 + menuButtonHeight + menuButtonPad, 200, menuButtonHeight, this);
+		bLeaderboard.setText("Leaderboard");
+		bLeaderboard.setColor(Color.ORANGE);
+		bLeaderboard.setAlignY(Align.TOP);
+		bLeaderboard.setVisible(true);
+
+		bCreator = new ButtonElement(width / 2, height / 2 + 2 * (menuButtonHeight + menuButtonPad), 200, menuButtonHeight, this);
+		bCreator.setText("Puzzle Creator");
+		bCreator.setColor(Color.YELLOW);
+		bCreator.setAlignY(Align.TOP);
+		bCreator.setVisible(true);
 	}
 
 	@Override

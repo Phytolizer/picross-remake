@@ -160,6 +160,7 @@ public class Graphics implements Runnable, WindowListener, WindowFocusListener {
 
 	public void setFont(Font font) {
 		graphics2D.setFont(font);
+		f = font;
 	}
 
 	//region unused overrides

@@ -19,6 +19,8 @@ public class ButtonElement extends Element {
 	private Color textColor = Color.black;
 	private String text;
 	private ButtonListener clickListener;
+	private Point clickStart;
+	private boolean lmbDown = false;
 
 	public ButtonElement(Graphics graphics) {
 		super(graphics);
@@ -90,6 +92,10 @@ public class ButtonElement extends Element {
 		return x1 > x2 && y1 > y2 && x1 < (x2 + width) && y1 < (y2 + height);
 	}
 
+	private boolean isInBounds(Point pt, int x2, int y2) {
+		return pt.x > x2 && pt.y > y2 && pt.x < (x2 + width) && pt.y < (y2 + height);
+	}
+
 	public void setText(String text) {
 		this.text = text;
 	}
@@ -121,7 +127,7 @@ public class ButtonElement extends Element {
 		int mouseX = graphics.getFrame().mouseX;
 		int mouseY = graphics.getFrame().mouseY;
 		Font f = graphics.getFont().deriveFont(
-				graphics.getFont().getStyle(),
+				Font.PLAIN,
 				getBestFontSize(graphics.getFont(),
 						graphics2D));
 		graphics2D.setFont(f);
@@ -129,11 +135,15 @@ public class ButtonElement extends Element {
 		int trueX = DrawingTools.getTrueX(x, width, alignX);
 		int trueY = DrawingTools.getTrueY(y, height, alignY);
 		//check bounds
+		if (!lmbDown && graphics.getFrame().clicking()) {
+			clickStart = new Point(mouseX, mouseY);
+		}
+		lmbDown = graphics.getFrame().clicking();
 		setHovering(isInBounds(mouseX, mouseY, trueX, trueY));
 		if (!graphics.getFrame().clicking() && clicking) {
 			onClick();
 		}
-		setClicking(mouseOver && graphics.getFrame().clicking());
+		setClicking(clickStart != null && isInBounds(clickStart, trueX, trueY) && mouseOver && graphics.getFrame().clicking());
 
 		//actual drawing
 		graphics2D.setColor(color);

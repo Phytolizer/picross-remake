@@ -4,6 +4,11 @@ import mygl.*;
 import mygl.Graphics;
 
 import java.awt.*;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+
+import static java.awt.Color.*;
 
 /**
  * @author onContentStop
@@ -36,7 +41,7 @@ public class GameWindow extends Graphics {
 		//bStartGame is a perfectly centered ButtonElement. No matter what, B will be at the center of the screen.
 		bStartGame = new ButtonElement(width / 2, height / 2, 200, menuButtonHeight, this); //Initializes the button with a position, size and graphics context.
 		bStartGame.setText("Start Gayme"); //The text to display on the button goes here. The size of this text will be determined automatically by a process unknown to humankind.
-		bStartGame.setColor(Color.GREEN); //This is the color that will be used on the background of the button, behind the text and inside the borders.
+		bStartGame.setColor(green); //This is the color that will be used on the background of the button, behind the text and inside the borders.
 		bStartGame.setClickListener(() -> {
 			System.out.println("You clicked the button. You Win!"); //This code will be executed whenever the button registers a click.
 			bStartGame.setVisible(false);                                    //A click occurs when the left mouse button is released on top of the visible button element.
@@ -74,13 +79,21 @@ public class GameWindow extends Graphics {
 
 		bLeaderboard = new ButtonElement(width / 2, height / 2 + menuButtonHeight + menuButtonPad, 200, menuButtonHeight, this);
 		bLeaderboard.setText("Leaderboard");
-		bLeaderboard.setColor(Color.ORANGE);
+		bLeaderboard.setColor(orange);
 		bLeaderboard.setAlignY(Align.TOP);
+		bLeaderboard.setClickListener(() -> {
+			displayStatusNoBG("Opening in browser...");
+			try {
+				Desktop.getDesktop().browse(new URL("https://westonreed.com/picross/leaderboard.php").toURI());
+			} catch (IOException | URISyntaxException e) {
+				e.printStackTrace();
+			}
+		});
 		bLeaderboard.setVisible(true);
 
 		bCreator = new ButtonElement(width / 2, height / 2 + 2 * (menuButtonHeight + menuButtonPad), 200, menuButtonHeight, this);
 		bCreator.setText("Puzzle Creator");
-		bCreator.setColor(Color.YELLOW);
+		bCreator.setColor(yellow);
 		bCreator.setAlignY(Align.TOP);
 		bCreator.setVisible(true);
 	}
@@ -97,7 +110,7 @@ public class GameWindow extends Graphics {
 		graphics2D.setColor(background.getCurrentColor());
 		graphics2D.fillRect(0, 0, width, height);
 		setFont(new Font("Arial", Font.BOLD, 50));
-		graphics2D.setColor(Color.black);
+		graphics2D.setColor(black);
 		DrawingTools.drawCenteredText(f, "PICROSS", width / 2, TOP_BAR_HEIGHT + 60, graphics2D);
 		//There are some debug tools here. Use them, or don't. I don't really care.
 		//region debug mouse position
@@ -106,5 +119,12 @@ public class GameWindow extends Graphics {
 		//endregion
 		//bStartGame.draw();
 		//^ Hey look, you don't have to do this anymore!
+	}
+
+	private void displayStatusNoBG(String message) {
+		setFont(new Font("Arial", Font.BOLD, 50));
+		graphics2D.setColor(black);
+		DrawingTools.drawCenteredText(f, message, width / 2, height / 2, graphics2D);
+		setFont(f.deriveFont(Font.PLAIN));
 	}
 }

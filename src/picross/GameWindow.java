@@ -20,6 +20,8 @@ public class GameWindow extends Graphics {
 	private ButtonElement bStartGame;
 	private ButtonElement bLeaderboard;
 	private ButtonElement bCreator;
+	private ButtonElement bControls;
+	private ButtonElement bQuitGame;
 
 	public GameWindow(KeyListener kl) {
 		super("Picross"); //Sets things up. If you want details, look in Graphics, it's too much to explain here.
@@ -37,7 +39,7 @@ public class GameWindow extends Graphics {
 		int menuButtonHeight = 100;
 		int menuButtonPad = 25;
 		int necessaryTopPad = 120;
-		int numMenuButtons = 3;
+		int numMenuButtons = 5;
 		//bStartGame is a perfectly centered ButtonElement. No matter what, B will be at the center of the screen.
 		bStartGame = new ButtonElement(width / 2, height / 2, 200, menuButtonHeight, this); //Initializes the button with a position, size and graphics context.
 		bStartGame.setText("Start Gayme"); //The text to display on the button goes here. The size of this text will be determined automatically by a process unknown to humankind.
@@ -48,9 +50,9 @@ public class GameWindow extends Graphics {
 		});
 		bStartGame.setAlignY(Align.TOP); //sets the button to be drawn from the top down rather than out from the center, i.e its y-coordinate is that of its top border
 		bStartGame.setOnUpdateAction(() -> { //the update action of bStartGame also moves all subsequent buttons in the main menu, to prevent unnecessary recalculation
-			int necessaryHeight = necessaryTopPad + numMenuButtons * menuButtonHeight + (numMenuButtons - 1) * menuButtonPad;
+			int necessaryHeight = necessaryTopPad + numMenuButtons * menuButtonHeight + (numMenuButtons) * menuButtonPad;
 			int newMenuButtonHeight = menuButtonHeight, newMenuButtonPad = menuButtonPad;
-			int clearSpace = height - necessaryTopPad - numMenuButtons * menuButtonHeight - (numMenuButtons - 1) * menuButtonPad;
+			int clearSpace = height - necessaryTopPad - numMenuButtons * menuButtonHeight - (numMenuButtons) * menuButtonPad;
 			int buttonSpace = height - necessaryTopPad;
 			int spacePerButton = buttonSpace / numMenuButtons;
 			double changeFactor = (double) spacePerButton / (menuButtonHeight + menuButtonPad);
@@ -71,6 +73,14 @@ public class GameWindow extends Graphics {
 			bCreator.setX(width / 2);
 			bCreator.setHeight(newMenuButtonHeight);
 			bCreator.setY(bStartGame.getY() + 2 * (newMenuButtonHeight + newMenuButtonPad));
+
+			bControls.setX(width / 2);
+			bControls.setHeight(newMenuButtonHeight);
+			bControls.setY(bStartGame.getY() + 3 * (newMenuButtonHeight + newMenuButtonPad));
+
+			bQuitGame.setX(width / 2);
+			bQuitGame.setHeight(newMenuButtonHeight);
+			bQuitGame.setY(bStartGame.getY() + 4 * (newMenuButtonHeight + newMenuButtonPad));
 		});/*Note that when bStartGame is not visible, *none* of the menu buttons will be moved because their recalculation depends on bStartGame being updated.
 			This should not be a problem as long as bStartGame is visible when the other buttons should be.
 			If this is a problem, pls fix.
@@ -91,11 +101,28 @@ public class GameWindow extends Graphics {
 		});
 		bLeaderboard.setVisible(true);
 
-		bCreator = new ButtonElement(width / 2, height / 2 + 2 * (menuButtonHeight + menuButtonPad), 200, menuButtonHeight, this);
+		bCreator = new ButtonElement(0, 0, 200, menuButtonHeight, this);//init x and y don't matter because they are updated constantly anyway
 		bCreator.setText("Puzzle Creator");
 		bCreator.setColor(yellow);
 		bCreator.setAlignY(Align.TOP);
 		bCreator.setVisible(true);
+
+		bControls = new ButtonElement(0, 0, 200, menuButtonHeight, this);
+		bControls.setText("Controls Menu");
+		bControls.setColor(blue);
+		bControls.setAlignY(Align.TOP);
+		bControls.setVisible(true);
+
+		bQuitGame = new ButtonElement(0, 0, 200, menuButtonHeight, this);
+		bQuitGame.setText("Quit Game");
+		bQuitGame.setColor(red);
+		bQuitGame.setAlignY(Align.TOP);
+		bQuitGame.setClickListener(() -> {
+			System.out.println("Quitting normally...");
+			windowClosing(null);
+			windowClosed(null);
+		});
+		bQuitGame.setVisible(true);
 	}
 
 	@Override

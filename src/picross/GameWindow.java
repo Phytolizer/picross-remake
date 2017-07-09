@@ -101,7 +101,7 @@ public class GameWindow extends Graphics {
 		});
 		bLeaderboard.setVisible(true);
 
-		bCreator = new ButtonElement(0, 0, 200, menuButtonHeight, this);//init x and y don't matter because they are updated constantly anyway
+		bCreator = new ButtonElement(0, 0, 200, menuButtonHeight, this);//initial x and y don't matter because they are updated each frame anyway
 		bCreator.setText("Puzzle Creator");
 		bCreator.setColor(yellow);
 		bCreator.setAlignY(Align.TOP);
@@ -128,7 +128,7 @@ public class GameWindow extends Graphics {
 	@Override
 	public void runActions() {
 		background.update(); //This allows the background color to change continuously. (Discretely, but with small enough steps it looks continuous.)
-		draw(); //I'm not explaining this. Just no. There is no way the function is not clear. It draws stuff.
+		draw();
 	}
 
 	protected void drawActions() {

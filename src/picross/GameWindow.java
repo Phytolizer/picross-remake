@@ -7,6 +7,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Stack;
 
 import static java.awt.Color.*;
 
@@ -22,6 +23,15 @@ public class GameWindow extends Graphics {
 	private ButtonElement bCreator;
 	private ButtonElement bControls;
 	private ButtonElement bQuitGame;
+	private ButtonElement bBack;
+	/**
+	 * Contains all Elements that should be displayed on screen with certain Windows. This is used to
+	 * manage which Elements are visible when a particular Window is on the top of the windowStack. All Elements
+	 * should be added to this list with a specific Window, and can be added to multiple <code>Window</code>s.
+	 */
+	private ElementList elements_by_window;
+	private Stack<Window> windowStack;
+	private Window currWindow;
 
 	public GameWindow(KeyListener kl) {
 		super("Picross"); //Sets things up. If you want details, look in Graphics, it's too much to explain here.
@@ -31,8 +41,10 @@ public class GameWindow extends Graphics {
 		new Thread(bgTimer).start();
 		bgTimer.start();
 		background = new Background(100, bgTimer, 10000); //This background will choose random colors and shift between them smoothly every 10 seconds.
+		elements_by_window = new ElementList();
 		initButtons();
 		setFrameSleepInterval((short) ((double) 1000 / maxFPS));
+		pushWindow(Window.MAIN);
 	}
 
 	private void initButtons() {
@@ -45,8 +57,7 @@ public class GameWindow extends Graphics {
 		bStartGame.setText("Start Gayme"); //The text to display on the button goes here. The size of this text will be determined automatically by a process unknown to humankind.
 		bStartGame.setColor(green); //This is the color that will be used on the background of the button, behind the text and inside the borders.
 		bStartGame.setClickListener(() -> {
-			System.out.println("You clicked the button. You Win!"); //This code will be executed whenever the button registers a click.
-			bStartGame.setVisible(false);                                    //A click occurs when the left mouse button is released on top of the visible button element.
+			pushWindow(Window.SIZE);
 		});
 		bStartGame.setAlignY(Align.TOP); //sets the button to be drawn from the top down rather than out from the center, i.e its y-coordinate is that of its top border
 		bStartGame.setOnUpdateAction(() -> { //the update action of bStartGame also moves all subsequent buttons in the main menu, to prevent unnecessary recalculation
@@ -85,6 +96,7 @@ public class GameWindow extends Graphics {
 			This should not be a problem as long as bStartGame is visible when the other buttons should be.
 			If this is a problem, pls fix.
 		*/
+		elements_by_window.add(Window.MAIN, bStartGame);
 		bStartGame.setVisible(true); //Now the button will be drawn and updated on screen!
 
 		bLeaderboard = new ButtonElement(width / 2, height / 2 + menuButtonHeight + menuButtonPad, 200, menuButtonHeight, this);
@@ -99,18 +111,21 @@ public class GameWindow extends Graphics {
 				e.printStackTrace();
 			}
 		});
+		elements_by_window.add(Window.MAIN, bLeaderboard);
 		bLeaderboard.setVisible(true);
 
 		bCreator = new ButtonElement(0, 0, 200, menuButtonHeight, this);//initial x and y don't matter because they are updated each frame anyway
 		bCreator.setText("Puzzle Creator");
 		bCreator.setColor(yellow);
 		bCreator.setAlignY(Align.TOP);
+		elements_by_window.add(Window.MAIN, bCreator);
 		bCreator.setVisible(true);
 
 		bControls = new ButtonElement(0, 0, 200, menuButtonHeight, this);
 		bControls.setText("Controls Menu");
 		bControls.setColor(blue);
 		bControls.setAlignY(Align.TOP);
+		elements_by_window.add(Window.MAIN, bControls);
 		bControls.setVisible(true);
 
 		bQuitGame = new ButtonElement(0, 0, 200, menuButtonHeight, this);
@@ -119,10 +134,19 @@ public class GameWindow extends Graphics {
 		bQuitGame.setAlignY(Align.TOP);
 		bQuitGame.setClickListener(() -> {
 			System.out.println("Quitting normally...");
-			windowClosing(null);
-			windowClosed(null);
+			quitGame();
 		});
+		elements_by_window.add(Window.MAIN, bQuitGame);
 		bQuitGame.setVisible(true);
+
+		bBack = new ButtonElement(0, 0, 100, 100, this);
+		bBack.setText("<");
+		bBack.setColor(red);
+		bBack.setAlignY(Align.TOP);
+		bBack.setAlignX(Align.LEFT);
+		bBack.setClickListener(this::popWindow);
+		elements_by_window.add(Window.SIZE, bBack);
+		elements_by_window.add(Window.CONTROLS, bBack);
 	}
 
 	@Override
@@ -136,9 +160,7 @@ public class GameWindow extends Graphics {
 		//if you don't have a background, things will look weird when the window is resized because of how that's done.
 		graphics2D.setColor(background.getCurrentColor());
 		graphics2D.fillRect(0, 0, width, height);
-		setFont(new Font("Arial", Font.BOLD, 50));
-		graphics2D.setColor(black);
-		DrawingTools.drawCenteredText(f, "PICROSS", width / 2, TOP_BAR_HEIGHT + 60, graphics2D);
+		currWindow.draw(this);
 		//There are some debug tools here. Use them, or don't. I don't really care.
 		//region debug mouse position
 		/*setFont(new Font("Arial", Font.PLAIN, 20));
@@ -153,5 +175,36 @@ public class GameWindow extends Graphics {
 		graphics2D.setColor(black);
 		DrawingTools.drawCenteredText(f, message, width / 2, height / 2, graphics2D);
 		setFont(f.deriveFont(Font.PLAIN));
+	}
+
+	private void pushWindow(Window window) {
+		if(windowStack == null) {
+			windowStack = new Stack<>();
+		}
+		if (windowStack.contains(window)) {
+			throw new IllegalStateException("Tried to push a window to the stack that already was in the stack!");
+		}
+		windowStack.push(window);
+		currWindow = window;
+		elements_by_window.setWindow(window);
+	}
+
+	private Window popWindow() {
+		if(windowStack.size() == 1) {
+			System.out.println("Quitting because the window stack was emptied.");
+			quitGame();
+		}
+		if(windowStack.empty()) {
+			throw new IllegalStateException("Tried to pop a window from an empty stack! Please notify the developer if you get this message.");
+		}
+		Window oldWindow = windowStack.pop();
+		currWindow = windowStack.peek();
+		elements_by_window.setWindow(currWindow);
+		return oldWindow;
+	}
+
+	private void quitGame() {
+		windowClosing(null);
+		windowClosed(null);
 	}
 }

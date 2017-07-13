@@ -16,7 +16,6 @@ import static java.awt.Color.*;
  */
 public class GameWindow extends Graphics {
 	private final int maxFPS = 144;
-	private final int TOP_BAR_HEIGHT = 30;
 	private Background background;
 	private ButtonElement bStartGame;
 	private ButtonElement bLeaderboard;
@@ -125,6 +124,9 @@ public class GameWindow extends Graphics {
 		bControls.setText("Controls Menu");
 		bControls.setColor(blue);
 		bControls.setAlignY(Align.TOP);
+		bControls.setClickListener(() -> {
+			pushWindow(Window.CONTROLS);
+		});
 		elements_by_window.add(Window.MAIN, bControls);
 		bControls.setVisible(true);
 
@@ -161,13 +163,13 @@ public class GameWindow extends Graphics {
 		graphics2D.setColor(background.getCurrentColor());
 		graphics2D.fillRect(0, 0, width, height);
 		currWindow.draw(this);
-		//There are some debug tools here. Use them, or don't. I don't really care.
+		//There are some debug tools here.
 		//region debug mouse position
 		/*setFont(new Font("Arial", Font.PLAIN, 20));
 		DrawingTools.drawCenteredText(f, "" + frame.mouseX + ", " + frame.mouseY, width / 2, height / 2, art);*/
 		//endregion
 		//bStartGame.draw();
-		//^ Hey look, you don't have to do this anymore!
+		//^ This is now covered by the Graphics class, which calls Elements.draw().
 	}
 
 	private void displayStatusNoBG(String message) {

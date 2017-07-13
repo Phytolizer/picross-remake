@@ -28,10 +28,6 @@ public class ElementList {
 
 	//Is this an optimal method for switching to another window?
 	public void setWindow(Window w) {
-		//Sets all elements assigned to w to be visible.
-		for(Element e : elements.get(w)) {
-			e.setVisible(true);//TODO why does this not work?
-		}
 		//Sets all elements not assigned to w to be invisible.
 		for(Window window : Window.values()) {
 			if(window == w) {
@@ -40,6 +36,10 @@ public class ElementList {
 			for(Element e : elements.get(window)) {
 				e.setVisible(false);
 			}
+		}
+		//Sets all elements assigned to w to be visible.
+		for(Element e : elements.get(w)) {
+			e.setVisible(true);
 		}
 	}
 }

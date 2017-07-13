@@ -139,8 +139,8 @@ public class GameWindow extends Graphics {
 		elements_by_window.add(Window.MAIN, bQuitGame);
 		bQuitGame.setVisible(true);
 
-		bBack = new ButtonElement(0, 0, 100, 100, this);
-		bBack.setText("<");
+		bBack = new ButtonElement(20, 20 + WINDOW_BAR_HEIGHT, 50, 50, this);
+		bBack.setText("Back");
 		bBack.setColor(red);
 		bBack.setAlignY(Align.TOP);
 		bBack.setAlignX(Align.LEFT);

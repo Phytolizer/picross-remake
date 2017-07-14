@@ -57,16 +57,36 @@ public class Graphics implements Runnable, WindowListener, WindowFocusListener {
 	 */
 	private short sleepInterval;
 
+	/**
+	 * Creates a new Graphics environment with the default title "Frame".
+	 */
 	public Graphics() {
 		frame = new BetterFrame("Frame", new Dimension(width, height));
 		initializeCommonVariables();
 	}
 
+	/**
+	 * Creates a new Graphics environment with a custom title.
+	 * @param title the title to use for the frame
+	 */
 	public Graphics(String title) {
 		frame = new BetterFrame(title, new Dimension(width, height));
 		initializeCommonVariables();
 	}
 
+	/**
+	 * Sets up the important things in Graphics.
+	 * <br/>
+	 * Starts by setting the flags {@link Graphics#running} to true and {@link Graphics#done} to false.
+	 * <br/>
+	 * Then determines the current monitor's width and height in order to center itself on screen.
+	 * <br/>
+	 * Adds some listeners to the {@link Graphics#frame} so that it knows when it is being closed, minimized, or lost focus.
+	 * <br/>
+	 * Ensures that it is not visible by default (i.e until it is explicitly set to be).
+	 * <br/>
+	 * Creates the first instance of the image buffer.
+	 */
 	private void initializeCommonVariables() {
 		running = true;
 		done = false;

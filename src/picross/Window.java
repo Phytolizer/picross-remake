@@ -36,6 +36,17 @@ public enum Window {
 		public void draw(Graphics g) {
 
 		}
+	}, GAMEMODE {
+		public void draw(Graphics g) {
+			Graphics2D graphics2D = g.getGraphics2D();
+			g.setFont(new Font("Arial", Font.BOLD, 50));
+			graphics2D.setColor(black);
+			DrawingTools.drawCenteredText(g.getFont(), "GAME MODE", g.width / 2, g.WINDOW_BAR_HEIGHT + 60, graphics2D);
+		}
+	}, LOAD {
+		public void draw(Graphics g) {
+
+		}
 	};
 
 	public void draw(Graphics g) {

@@ -12,6 +12,8 @@ public class Picross {
 
 	public static void main(String[] args) {
 		GameWindow window = new GameWindow(null);
+		KeyListener kl = new KeyListener(window);
+		window.setKeyListener(kl);
 		window.setVisible(true);
 		new Thread(window).start();
 	}

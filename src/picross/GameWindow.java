@@ -74,6 +74,7 @@ public class GameWindow extends Graphics {
 	 * Stores the value of the currently visible window.
 	 */
 	private Window currWindow;
+	private KeyListener keyListener;
 	//endregion
 
 	/**
@@ -108,8 +109,7 @@ public class GameWindow extends Graphics {
 	private void initButtons() {
 		int menuButtonHeight = 100;
 		int menuButtonPad = 25;
-		int necessaryTopPad = 120;
-		int numMenuButtons = 5;
+		int necessaryTopPad = WINDOW_BAR_HEIGHT + 60;
 		//bStartGame is a perfectly centered ButtonElement. No matter what, B will be at the center of the screen.
 		bStartGame = new ButtonElement(width / 2, height / 2, 200, menuButtonHeight, this); //Initializes the button with a position, size and graphics context.
 		bStartGame.setText("Start Game"); //The text to display on the button goes here. The size of this text will be determined automatically by a process unknown to humankind.
@@ -117,50 +117,13 @@ public class GameWindow extends Graphics {
 		bStartGame.setClickListener(() -> {
 			pushWindow(Window.GAMEMODE);
 		});
-		bStartGame.setAlignY(Align.TOP); //sets the button to be drawn from the top down rather than out from the center, i.e its y-coordinate is that of its top border
-		bStartGame.setOnUpdateAction(() -> { //the update action of bStartGame also moves all subsequent buttons in the main menu, to prevent unnecessary recalculation
-			/*
-			int necessaryHeight = necessaryTopPad + numMenuButtons * menuButtonHeight + (numMenuButtons) * menuButtonPad;
-			int newMenuButtonHeight = menuButtonHeight;
-			int newMenuButtonPad = menuButtonPad;
-			int clearSpace = height - necessaryTopPad - numMenuButtons * menuButtonHeight - (numMenuButtons) * menuButtonPad;
-			int buttonSpace = height - necessaryTopPad;
-			int spacePerButton = buttonSpace / numMenuButtons;
-			double changeFactor = (double) spacePerButton / (menuButtonHeight + menuButtonPad);
-			bStartGame.setX(width / 2);
-			if (height < necessaryHeight) {
-				newMenuButtonHeight = (int) (changeFactor * menuButtonHeight);
-				newMenuButtonPad = (int) (changeFactor * menuButtonPad);
-				bStartGame.setY(necessaryTopPad);
-			} else {
-				bStartGame.setY(necessaryTopPad + clearSpace / 2);
-			}
-			bStartGame.setHeight(newMenuButtonHeight);
-
-			//Now, each other menu button in turn is resized to newMenuButtonHeight and moved to their respective positions.
-			bLeaderboard.setX(width / 2);
-			bLeaderboard.setHeight(newMenuButtonHeight);
-			bLeaderboard.setY(bStartGame.getY() + newMenuButtonHeight + newMenuButtonPad);
-
-			bCreator.setX(width / 2);
-			bCreator.setHeight(newMenuButtonHeight);
-			bCreator.setY(bStartGame.getY() + 2 * (newMenuButtonHeight + newMenuButtonPad));
-
-			bControls.setX(width / 2);
-			bControls.setHeight(newMenuButtonHeight);
-			//The number 3 here refers to the number of buttons above bControls. Same applies for other buttons in this menu.
-			bControls.setY(bStartGame.getY() + 3 * (newMenuButtonHeight + newMenuButtonPad));
-
-			bQuitGame.setX(width / 2);
-			bQuitGame.setHeight(newMenuButtonHeight);
-			bQuitGame.setY(bStartGame.getY() + 4 * (newMenuButtonHeight + newMenuButtonPad));*/
-
+		bStartGame.setOnUpdateAction(() -> {
 			ButtonElement[] menuButtons = {bStartGame, bLeaderboard, bCreator, bControls, bQuitGame};
 			for(ButtonElement be : menuButtons) {
 				be.setX(width / 2);
 			}
 			int availableSpace = height - necessaryTopPad;
-			Elements.centerAndSpaceElements(menuButtons, menuButtonHeight, menuButtonPad, availableSpace, necessaryTopPad);
+			Elements.centerAndSpaceElements(menuButtons, menuButtonHeight, menuButtonPad, availableSpace, necessaryTopPad, Axis.VERTICAL);
 		});/*Note that when bStartGame is not visible, *none* of the menu buttons will be moved because their recalculation depends on bStartGame being updated.
 			This should not be a problem as long as bStartGame is visible when the other buttons should be.
 			If this is a problem, pls fix.
@@ -175,7 +138,6 @@ public class GameWindow extends Graphics {
 		bLeaderboard = new ButtonElement(width / 2, height / 2 + menuButtonHeight + menuButtonPad, 200, menuButtonHeight, this);
 		bLeaderboard.setText("Leaderboard");
 		bLeaderboard.setColor(orange);
-		bLeaderboard.setAlignY(Align.TOP);
 		bLeaderboard.setClickListener(() -> {
 			displayStatusNoBG("Opening in browser...");
 			try {
@@ -189,7 +151,6 @@ public class GameWindow extends Graphics {
 		bCreator = new ButtonElement(0, 0, 200, menuButtonHeight, this);//initial x and y don't matter because they are updated each frame anyway
 		bCreator.setText("Creator");
 		bCreator.setColor(yellow);
-		bCreator.setAlignY(Align.TOP);
 		elements_by_window.add(bCreator, Window.MAIN);
 		bCreator.setClickListener(() -> {
 			//TODO launch the puzzle creator
@@ -198,7 +159,6 @@ public class GameWindow extends Graphics {
 		bControls = new ButtonElement(0, 0, 200, menuButtonHeight, this);
 		bControls.setText("Controls");
 		bControls.setColor(blue);
-		bControls.setAlignY(Align.TOP);
 		bControls.setClickListener(() -> {
 			pushWindow(Window.CONTROLS);
 		});
@@ -207,7 +167,6 @@ public class GameWindow extends Graphics {
 		bQuitGame = new ButtonElement(0, 0, 200, menuButtonHeight, this);
 		bQuitGame.setText("Quit Game");
 		bQuitGame.setColor(red);
-		bQuitGame.setAlignY(Align.TOP);
 		bQuitGame.setClickListener(() -> {
 			System.out.println("Quitting normally...");
 			quitGame();
@@ -231,7 +190,12 @@ public class GameWindow extends Graphics {
 		//bRandomPuzzle will move itself and bLoadPuzzle simultaneously. Even though bLoadPuzzle is not initialized at this
 		//point, it will be by the time any Element updates, so it is safe to reference it here.
 		bRandomPuzzle.setOnUpdateAction(() -> {
-			bRandomPuzzle.setX(width / 2);
+			bRandomPuzzle.setY(height / 2);
+			int gamemodeButtonWidth = 250;
+			int gamemodeButtonPad = 100;
+			int availableSpace = width;
+			Element[] gamemodeButtons = {bRandomPuzzle, bLoadPuzzle};
+			Elements.centerAndSpaceElements(gamemodeButtons, gamemodeButtonWidth, gamemodeButtonPad, availableSpace, 0, Axis.HORIZONTAL);
 		});
 		bRandomPuzzle.setClickListener(() -> {
 			pushWindow(Window.SIZE);
@@ -243,8 +207,7 @@ public class GameWindow extends Graphics {
 		bLoadPuzzle.setColor(green);
 		bLoadPuzzle.setAlignY(Align.TOP);
 		bLoadPuzzle.setOnUpdateAction(() -> {
-			bLoadPuzzle.setX(width / 2);
-			bLoadPuzzle.setY(bRandomPuzzle.getY() + bRandomPuzzle.getHeight() + 20);
+			bLoadPuzzle.setY(height / 2);
 		});
 		bLoadPuzzle.setClickListener(() -> {
 			pushWindow(Window.LOAD);
@@ -311,5 +274,10 @@ public class GameWindow extends Graphics {
 	private void quitGame() {
 		windowClosing(null);
 		windowClosed(null);
+	}
+
+	public void setKeyListener(KeyListener keyListener) {
+		this.keyListener = keyListener;
+		frame.setKeyHandler(keyListener);
 	}
 }

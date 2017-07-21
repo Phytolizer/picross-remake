@@ -20,7 +20,7 @@ public class ElementList {
 		}
 	}
 
-	public void add(Window w, Element e) {
+	public void add(Element e, Window w) {
 		List<Element> elementsInWindow = elements.get(w);
 		elementsInWindow.add(e);
 		elements.put(w, elementsInWindow);

@@ -14,7 +14,7 @@ public class Graphics implements Runnable, WindowListener, WindowFocusListener {
 	/**
 	 * The height of the title bar in most operating systems. If this isn't true for all operating systems, tell me.
 	 */
-	public final int WINDOW_BAR_HEIGHT = 30;
+	public static final int WINDOW_BAR_HEIGHT = 30;
 	/**
 	 * The width of the {@link Graphics#frame} that Graphics owns. Should be updated whenever the frame is resized.
 	 */

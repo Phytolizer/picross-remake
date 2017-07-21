@@ -37,6 +37,11 @@ public class GameWindow extends Graphics {
 	 * Visible on the main menu, will call {@link GameWindow#pushWindow(Window) pushWindow} with {@link Window#CONTROLS} when clicked.
 	 */
 	private ButtonElement bControls;
+	private ButtonElement bDecSizeX;
+	private ButtonElement bDecSizeY;
+	private ButtonElement bGeneratePuzzle;
+	private ButtonElement bIncSizeX;
+	private ButtonElement bIncSizeY;
 	/**
 	 * Visible on the main menu, will open the browser to <a href="https://westonreed.com/picross/leaderboard.php">https://westonreed.com/picross/leaderboard.php</a> when clicked.
 	 */
@@ -65,16 +70,19 @@ public class GameWindow extends Graphics {
 	 * should be added to this list with a specific Window, and can be added to multiple <code>Window</code>s.
 	 */
 	private ElementList elements_by_window;
+	private KeyListener keyListener;
 	/**
 	 * Contains the current window stack that has been opened so far. Several buttons push to this stack to switch to another window,
 	 *  but bBack will return to the previous window in the stack.
 	 */
 	private Stack<Window> windowStack;
+	private TextElement theLetterX;
+	private TextElement xSize;
+	private TextElement ySize;
 	/**
 	 * Stores the value of the currently visible window.
 	 */
 	private Window currWindow;
-	private KeyListener keyListener;
 	//endregion
 
 	/**
@@ -95,7 +103,7 @@ public class GameWindow extends Graphics {
 		//Starts the timer. Duh.
 		bgTimer.start();
 		//This background will choose random colors and shift between them smoothly every 10 seconds.
-		background = new Background(100, bgTimer, 10000);
+		background = new Background(128, bgTimer, 10000);
 		//Initialize the element organizer.
 		elements_by_window = new ElementList();
 		//Initialize all ButtonElements that appear in the game. Period.
@@ -187,7 +195,6 @@ public class GameWindow extends Graphics {
 		bRandomPuzzle = new ButtonElement(0, 120, 200, 100, this);
 		bRandomPuzzle.setText("Random Mode");
 		bRandomPuzzle.setColor(yellow);
-		bRandomPuzzle.setAlignY(Align.TOP);
 		//bRandomPuzzle will move itself and bLoadPuzzle simultaneously. Even though bLoadPuzzle is not initialized at this
 		//point, it will be by the time any Element updates, so it is safe to reference it here.
 		bRandomPuzzle.setOnUpdateAction(() -> {
@@ -206,7 +213,6 @@ public class GameWindow extends Graphics {
 		bLoadPuzzle = new ButtonElement(0, 250, 200, 100, this);
 		bLoadPuzzle.setText("Load Puzzle");
 		bLoadPuzzle.setColor(green);
-		bLoadPuzzle.setAlignY(Align.TOP);
 		bLoadPuzzle.setOnUpdateAction(() -> {
 			bLoadPuzzle.setY(height / 2);
 		});
@@ -214,6 +220,74 @@ public class GameWindow extends Graphics {
 			pushWindow(Window.LOAD);
 		});
 		elements_by_window.add(bLoadPuzzle, Window.GAMEMODE);
+
+		bIncSizeX = new ButtonElement(this);
+		bIncSizeX.setText("Λ");
+		bIncSizeX.setColor(white);
+		bIncSizeX.setOnUpdateAction(() -> {
+			Element dummyBlankElement = new Element(this);
+			dummyBlankElement.setWidth(100);
+			dummyBlankElement.setHeight(50);
+			int bottomButtonSpace = 75;
+			int verticalSpace = height - necessaryTopPad - bottomButtonSpace;
+			int horizontalSpace = width;
+			int idealWidth = 100;
+			int idealXSpacing = 25;
+			int idealHeight = 50;
+			int idealYSpacing = 25;
+			Element[] topRow = {bIncSizeX, dummyBlankElement, bIncSizeY};
+			Elements.centerAndSpaceElements(topRow, idealWidth, idealXSpacing, horizontalSpace, 0, Axis.HORIZONTAL);
+			Element[] middleRow = {xSize, theLetterX, ySize};
+			Elements.centerAndSpaceElements(middleRow, idealWidth, idealXSpacing, horizontalSpace, 0, Axis.HORIZONTAL);
+			Element[] bottomRow = {bDecSizeX, dummyBlankElement, bDecSizeY};
+			Elements.centerAndSpaceElements(bottomRow, idealWidth, idealXSpacing, horizontalSpace, 0, Axis.HORIZONTAL);
+			Element[] leftCol = {bIncSizeX, xSize, bDecSizeX};
+			Elements.centerAndSpaceElements(leftCol, idealHeight, idealYSpacing, verticalSpace, necessaryTopPad, Axis.VERTICAL);
+			Element[] middleCol = {dummyBlankElement, theLetterX, dummyBlankElement};
+			Elements.centerAndSpaceElements(middleCol, idealHeight, idealYSpacing, verticalSpace, necessaryTopPad, Axis.VERTICAL);
+			Element[] rightCol = {bIncSizeY, ySize, bDecSizeY};
+			Elements.centerAndSpaceElements(rightCol, idealHeight, idealYSpacing, verticalSpace, necessaryTopPad, Axis.VERTICAL);
+		});
+		elements_by_window.add(bIncSizeX, Window.SIZE);
+
+		xSize = new TextElement(this);
+		xSize.setText("10");
+		elements_by_window.add(xSize, Window.SIZE);
+
+		bDecSizeX = new ButtonElement(this);
+		bDecSizeX.setText("V");
+		bDecSizeX.setColor(white);
+		elements_by_window.add(bDecSizeX, Window.SIZE);
+
+		theLetterX = new TextElement(this);
+		theLetterX.setText("x");
+		elements_by_window.add(theLetterX, Window.SIZE);
+
+		bIncSizeY = new ButtonElement(this);
+		bIncSizeY.setText("Λ");
+		bIncSizeY.setColor(white);
+		elements_by_window.add(bIncSizeY, Window.SIZE);
+
+		ySize = new TextElement(this);
+		ySize.setText("10");
+		elements_by_window.add(ySize, Window.SIZE);
+
+		bDecSizeY = new ButtonElement(this);
+		bDecSizeY.setText("V");
+		bDecSizeY.setColor(white);
+		elements_by_window.add(bDecSizeY, Window.SIZE);
+
+		bGeneratePuzzle = new ButtonElement(this);
+		bGeneratePuzzle.setText("Let's do this!");
+		bGeneratePuzzle.setColor(green);
+		bGeneratePuzzle.setWidth(200);
+		bGeneratePuzzle.setHeight(60);
+		bGeneratePuzzle.setAlignY(Align.BOTTOM);
+		bGeneratePuzzle.setOnUpdateAction(() -> {
+			bGeneratePuzzle.setX(width / 2);
+			bGeneratePuzzle.setY(height - 7);
+		});
+		elements_by_window.add(bGeneratePuzzle, Window.SIZE);
 	}
 
 	@Override

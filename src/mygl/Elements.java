@@ -9,7 +9,8 @@ import java.util.List;
 public class Elements {
 	private static List<Element> all_elements = new ArrayList<>();
 	public static void update() {
-		for(Element e : all_elements) {
+		for (int i = 0; i < all_elements.size(); i++) {
+			Element e = all_elements.get(i);
 			e.update();
 		}
 	}

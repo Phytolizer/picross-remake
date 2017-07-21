@@ -31,8 +31,6 @@ public class ButtonElement extends Element {
 		y = 0;
 		width = 100;
 		height = 100;
-		alignX = Align.CENTER_HORIZONTAL;
-		alignY = Align.CENTER_VERTICAL;
 	}
 
 	public ButtonElement(int x, int y, int width, int height, Graphics graphics) {
@@ -44,8 +42,6 @@ public class ButtonElement extends Element {
 		this.y = y;
 		this.width = width;
 		this.height = height;
-		alignX = Align.CENTER_HORIZONTAL;
-		alignY = Align.CENTER_VERTICAL;
 	}
 
 	public ButtonElement(int x, int y, int width, int height, Color backgroundColor, Graphics graphics) {
@@ -60,8 +56,6 @@ public class ButtonElement extends Element {
 		this.y = y;
 		this.width = width;
 		this.height = height;
-		alignX = Align.CENTER_HORIZONTAL;
-		alignY = Align.CENTER_VERTICAL;
 	}
 
 	public void setHovering(boolean hovering) {
@@ -120,14 +114,6 @@ public class ButtonElement extends Element {
 
 	public void setClickListener(ButtonListener buttonListener) {
 		clickListener = buttonListener;
-	}
-
-	public int getWidth() {
-		return width;
-	}
-
-	public int getHeight() {
-		return height;
 	}
 
 	public void draw() {

@@ -18,6 +18,8 @@ public class Element {
 
 	public Element(Graphics graphics) {
 		this.graphics = graphics;
+		alignX = Align.CENTER_HORIZONTAL;
+		alignY = Align.CENTER_VERTICAL;
 		Elements.add(this);
 	}
 

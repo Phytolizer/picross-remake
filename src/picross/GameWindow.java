@@ -158,7 +158,7 @@ public class GameWindow extends Graphics {
 
 		bControls = new ButtonElement(0, 0, 200, menuButtonHeight, this);
 		bControls.setText("Controls");
-		bControls.setColor(blue);
+		bControls.setColor(new Color(0x007FFF));
 		bControls.setClickListener(() -> {
 			pushWindow(Window.CONTROLS);
 		});
@@ -182,6 +182,7 @@ public class GameWindow extends Graphics {
 		elements_by_window.add(bBack, Window.SIZE);
 		elements_by_window.add(bBack, Window.CONTROLS);
 		elements_by_window.add(bBack, Window.GAMEMODE);
+		elements_by_window.add(bBack, Window.LOAD);
 
 		bRandomPuzzle = new ButtonElement(0, 120, 200, 100, this);
 		bRandomPuzzle.setText("Random Mode");

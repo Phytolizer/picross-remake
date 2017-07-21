@@ -50,13 +50,13 @@ public class RandomColorGenerator {
 			}
 		} else if (colorList == null) {
 			Color testColor = null;
-			double luminance = 0;
+			double luminance;
 			do {
 				int r = (int) (Math.random() * 256);
 				int g = (int) (Math.random() * 256);
 				int b = (int) (Math.random() * 256);
 				testColor = new Color(r, g, b);
-				luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+				luminance = Colors.getLuminance(r, g, b);
 			} while (luminance < minBrightness);
 			return testColor;
 		}

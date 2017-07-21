@@ -51,6 +51,9 @@ public class ButtonElement extends Element {
 	public ButtonElement(int x, int y, int width, int height, Color backgroundColor, Graphics graphics) {
 		super(graphics);
 		color = backgroundColor;
+		if(Colors.getLuminance(color) < 128) {
+			setTextColor(Color.white);
+		}
 		coverColor = CLEAR;
 		text = "";
 		this.x = x;
@@ -102,6 +105,11 @@ public class ButtonElement extends Element {
 
 	public void setColor(Color color) {
 		this.color = color;
+		if(Colors.getLuminance(color) < 128) {
+			setTextColor(Color.white);
+		} else {
+			setTextColor(Color.black);
+		}
 	}
 
 	private void onClick() {

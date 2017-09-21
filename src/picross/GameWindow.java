@@ -1,5 +1,6 @@
 package picross;
 
+import bgusolver.JCIndependantSolver;
 import mygl.*;
 import mygl.Graphics;
 
@@ -7,6 +8,8 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
 import static java.awt.Color.*;
@@ -18,6 +21,7 @@ public class GameWindow extends Graphics {
 	//Please alphabetize both types *and* fields within a certain type.
 	//region final variables
 	private final int MAX_FPS = 144;
+	protected final int MAX_PUZZLE_SIZE = 25;
 	private final String VERSION = "2.0.0";
 	//endregion
 	//region regular fields
@@ -70,7 +74,12 @@ public class GameWindow extends Graphics {
 	 * should be added to this list with a specific Window, and can be added to multiple <code>Window</code>s.
 	 */
 	private ElementList elements_by_window;
+	private int puzzleSizeX;
+	private int puzzleSizeY;
 	private KeyListener keyListener;
+	private Map<String, String> prefs;
+	private ScrollAreaElement puzzleSizeXScrollZone;
+	private ScrollAreaElement puzzleSizeYScrollZone;
 	/**
 	 * Contains the current window stack that has been opened so far. Several buttons push to this stack to switch to another window,
 	 *  but bBack will return to the previous window in the stack.
@@ -92,6 +101,7 @@ public class GameWindow extends Graphics {
 	public GameWindow(KeyListener kl) {
 		//Sets things up through its parent class
 		super("Picross");
+		loadFromPrefs();
 		//An ugly but working method for key handling. Ew.
 		frame.setKeyHandler(kl); //TODO a really good solution for key handling that makes everything look pretty
 		//Maximizes the frame on screen.
@@ -114,6 +124,24 @@ public class GameWindow extends Graphics {
 		pushWindow(Window.MAIN);
 	}
 
+	private void loadFromPrefs() {
+		prefs = Prefs.read();
+		for(Object o : prefs.entrySet()) {
+			HashMap.Entry entry = (HashMap.Entry) o;
+			if(entry.getKey().equals("puzzle_size_x")) {
+				int sx = Integer.parseInt((String) entry.getValue());
+				if(sx > 0 && sx <= MAX_PUZZLE_SIZE) {
+					puzzleSizeX = sx;
+				}
+			} else if(entry.getKey().equals("puzzle_size_y")) {
+				int sy = Integer.parseInt((String) entry.getValue());
+				if(sy > 0 && sy < MAX_PUZZLE_SIZE) {
+					puzzleSizeY = sy;
+				}
+			}
+		}
+	}
+
 	private void initButtons() {
 		int menuButtonHeight = 100;
 		int menuButtonPad = 25;
@@ -132,6 +160,13 @@ public class GameWindow extends Graphics {
 			}
 			int availableSpace = height - necessaryTopPad;
 			Elements.centerAndSpaceElements(menuButtons, menuButtonHeight, menuButtonPad, availableSpace, necessaryTopPad, Axis.VERTICAL);
+			if(bLeaderboard != null && bLeaderboard.getFontSize() > 0) {
+				int fs = bLeaderboard.getFontSize();
+				bStartGame.setMaxFontSize(fs);
+				bCreator.setMaxFontSize(fs);
+				bControls.setMaxFontSize(fs);
+				bQuitGame.setMaxFontSize(fs);
+			}
 		});/*Note that when bStartGame is not visible, *none* of the menu buttons will be moved because their recalculation depends on bStartGame being updated.
 			This should not be a problem as long as bStartGame is visible when the other buttons should be.
 			If this is a problem, pls fix.
@@ -167,6 +202,9 @@ public class GameWindow extends Graphics {
 		bControls = new ButtonElement(0, 0, 200, menuButtonHeight, this);
 		bControls.setText("Controls");
 		bControls.setColor(new Color(0x007FFF));
+		if(bLeaderboard.getFontSize() > 0) {
+			bControls.setMaxFontSize(bLeaderboard.getFontSize());
+		}
 		bControls.setClickListener(() -> {
 			pushWindow(Window.CONTROLS);
 		});
@@ -175,6 +213,9 @@ public class GameWindow extends Graphics {
 		bQuitGame = new ButtonElement(0, 0, 200, menuButtonHeight, this);
 		bQuitGame.setText("Quit Game");
 		bQuitGame.setColor(red);
+		if(bLeaderboard.getFontSize() > 0) {
+			bQuitGame.setMaxFontSize(bLeaderboard.getFontSize());
+		}
 		bQuitGame.setClickListener(() -> {
 			System.out.println("Quitting normally...");
 			quitGame();
@@ -204,6 +245,9 @@ public class GameWindow extends Graphics {
 			int availableSpace = width;
 			Element[] gamemodeButtons = {bRandomPuzzle, bLoadPuzzle};
 			Elements.centerAndSpaceElements(gamemodeButtons, gamemodeButtonWidth, gamemodeButtonPad, availableSpace, 0, Axis.HORIZONTAL);
+			if(bRandomPuzzle.getFontSize() > 0) {
+				bLoadPuzzle.setMaxFontSize(bRandomPuzzle.getFontSize());
+			}
 		});
 		bRandomPuzzle.setClickListener(() -> {
 			pushWindow(Window.SIZE);
@@ -248,15 +292,57 @@ public class GameWindow extends Graphics {
 			Element[] rightCol = {bIncSizeY, ySize, bDecSizeY};
 			Elements.centerAndSpaceElements(rightCol, idealHeight, idealYSpacing, verticalSpace, necessaryTopPad, Axis.VERTICAL);
 		});
+		bIncSizeX.setClickListener(() -> {
+			if(puzzleSizeX + 1 <= MAX_PUZZLE_SIZE) {
+				puzzleSizeX++;
+			}
+		});
 		elements_by_window.add(bIncSizeX, Window.SIZE);
 
 		xSize = new TextElement(this);
-		xSize.setText("10");
+		xSize.setText(Integer.toString(puzzleSizeX));
+		xSize.setOnUpdateAction(() -> {
+			xSize.setText(Integer.toString(puzzleSizeX));
+			bIncSizeX.setVisible(puzzleSizeX < MAX_PUZZLE_SIZE);
+			bDecSizeX.setVisible(puzzleSizeX > 1);
+		});
 		elements_by_window.add(xSize, Window.SIZE);
+
+		puzzleSizeXScrollZone = new ScrollAreaElement(this);
+		puzzleSizeXScrollZone.setAlignX(Align.LEFT);
+		puzzleSizeXScrollZone.setAlignY(Align.TOP);
+		puzzleSizeXScrollZone.setOnUpdateAction(() -> {
+			int spaceBetweenButtons = bDecSizeX.getTrueY() - bIncSizeX.getTrueY() - bIncSizeX.getHeight();
+			puzzleSizeXScrollZone.setWidth(bIncSizeX.getWidth());
+			puzzleSizeXScrollZone.setHeight(spaceBetweenButtons);
+			puzzleSizeXScrollZone.setX(bIncSizeX.getTrueX());
+			puzzleSizeXScrollZone.setY(bIncSizeX.getY() + bIncSizeX.getHeight());
+		});
+		puzzleSizeXScrollZone.setOnScrollAction(scrollAmt -> {
+			while(scrollAmt != 0) {
+				if(scrollAmt > 0) {
+					if(puzzleSizeX + 1 <= MAX_PUZZLE_SIZE) {
+						puzzleSizeX++;
+					}
+					scrollAmt--;
+				} else {
+					if(puzzleSizeX - 1 > 0) {
+						puzzleSizeX--;
+					}
+					scrollAmt++;
+				}
+			}
+		});
+		elements_by_window.add(puzzleSizeXScrollZone, Window.SIZE);
 
 		bDecSizeX = new ButtonElement(this);
 		bDecSizeX.setText("V");
 		bDecSizeX.setColor(white);
+		bDecSizeX.setClickListener(() -> {
+			if(puzzleSizeX - 1 > 0) {
+				puzzleSizeX--;
+			}
+		});
 		elements_by_window.add(bDecSizeX, Window.SIZE);
 
 		theLetterX = new TextElement(this);
@@ -266,15 +352,57 @@ public class GameWindow extends Graphics {
 		bIncSizeY = new ButtonElement(this);
 		bIncSizeY.setText("Λ");
 		bIncSizeY.setColor(white);
+		bIncSizeY.setClickListener(() -> {
+			if(puzzleSizeY + 1 <= MAX_PUZZLE_SIZE) {
+				puzzleSizeY++;
+			}
+		});
 		elements_by_window.add(bIncSizeY, Window.SIZE);
 
 		ySize = new TextElement(this);
-		ySize.setText("10");
+		ySize.setText(Integer.toString(puzzleSizeY));
+		ySize.setOnUpdateAction(() -> {
+			ySize.setText(Integer.toString(puzzleSizeY));
+			bIncSizeY.setVisible(puzzleSizeY < MAX_PUZZLE_SIZE);
+			bDecSizeY.setVisible(puzzleSizeY > 1);
+		});
 		elements_by_window.add(ySize, Window.SIZE);
+
+		puzzleSizeYScrollZone = new ScrollAreaElement(this);
+		puzzleSizeYScrollZone.setAlignX(Align.LEFT);
+		puzzleSizeYScrollZone.setAlignY(Align.TOP);
+		puzzleSizeYScrollZone.setOnUpdateAction(() -> {
+			int spaceBetweenButtons = bDecSizeY.getTrueY() - bIncSizeY.getTrueY() - bIncSizeY.getHeight();
+			puzzleSizeYScrollZone.setWidth(bIncSizeY.getWidth());
+			puzzleSizeYScrollZone.setHeight(spaceBetweenButtons);
+			puzzleSizeYScrollZone.setX(bIncSizeY.getTrueX());
+			puzzleSizeYScrollZone.setY(bIncSizeY.getTrueY() + bIncSizeY.getHeight());
+		});
+		puzzleSizeYScrollZone.setOnScrollAction(scrollAmt -> {
+			while(scrollAmt != 0) {
+				if(scrollAmt > 0) {
+					if(puzzleSizeY + 1 <= MAX_PUZZLE_SIZE) {
+						puzzleSizeY++;
+					}
+					scrollAmt--;
+				} else {
+					if(puzzleSizeY - 1 > 0) {
+						puzzleSizeY--;
+					}
+					scrollAmt++;
+				}
+			}
+		});
+		elements_by_window.add(puzzleSizeYScrollZone, Window.SIZE);
 
 		bDecSizeY = new ButtonElement(this);
 		bDecSizeY.setText("V");
 		bDecSizeY.setColor(white);
+		bDecSizeY.setClickListener(() -> {
+			if(puzzleSizeY - 1 > 0) {
+				puzzleSizeY--;
+			}
+		});
 		elements_by_window.add(bDecSizeY, Window.SIZE);
 
 		bGeneratePuzzle = new ButtonElement(this);
@@ -286,6 +414,10 @@ public class GameWindow extends Graphics {
 		bGeneratePuzzle.setOnUpdateAction(() -> {
 			bGeneratePuzzle.setX(width / 2);
 			bGeneratePuzzle.setY(height - 7);
+		});
+		bGeneratePuzzle.setClickListener(() -> {
+			GridElement grid = new GridElement(new int[]{puzzleSizeX, puzzleSizeY}, this);
+			grid.generate();
 		});
 		elements_by_window.add(bGeneratePuzzle, Window.SIZE);
 	}

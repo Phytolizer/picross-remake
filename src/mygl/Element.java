@@ -1,6 +1,8 @@
 package mygl;
 
 
+import java.awt.*;
+
 /**
  * Created by mario on 4/11/2017.
  */
@@ -99,5 +101,22 @@ public class Element {
 	 */
 	public void setOnUpdateAction(Updater updateAction) {
 		updater = updateAction;
+	}
+
+
+	protected boolean isInBounds(int x1, int y1, int x2, int y2) {
+		return x1 > x2 && y1 > y2 && x1 < (x2 + width) && y1 < (y2 + height);
+	}
+
+	protected boolean isInBounds(Point pt, int x2, int y2) {
+		return pt.x > x2 && pt.y > y2 && pt.x < (x2 + width) && pt.y < (y2 + height);
+	}
+
+	public int getTrueX() {
+		return DrawingTools.getTrueX(x, width, alignX);
+	}
+
+	public int getTrueY() {
+		return DrawingTools.getTrueY(y, height, alignY);
 	}
 }

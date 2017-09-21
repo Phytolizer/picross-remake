@@ -21,6 +21,8 @@ public class ButtonElement extends Element {
 	private ButtonListener clickListener;
 	private Point clickStart;
 	private boolean lmbDown = false;
+	private int fontSize;
+	private int maxFontSize = -1;
 
 	public ButtonElement(Graphics graphics) {
 		super(graphics);
@@ -85,14 +87,6 @@ public class ButtonElement extends Element {
 		return i;
 	}
 
-	private boolean isInBounds(int x1, int y1, int x2, int y2) {
-		return x1 > x2 && y1 > y2 && x1 < (x2 + width) && y1 < (y2 + height);
-	}
-
-	private boolean isInBounds(Point pt, int x2, int y2) {
-		return pt.x > x2 && pt.y > y2 && pt.x < (x2 + width) && pt.y < (y2 + height);
-	}
-
 	public void setText(String text) {
 		this.text = text;
 	}
@@ -106,7 +100,7 @@ public class ButtonElement extends Element {
 		}
 	}
 
-	private void onClick() {
+	public void onClick() {
 		if (clickListener != null) {
 			clickListener.onClick();
 		}
@@ -120,14 +114,17 @@ public class ButtonElement extends Element {
 		Graphics2D graphics2D = graphics.getGraphics2D();
 		int mouseX = graphics.getFrame().mouseX;
 		int mouseY = graphics.getFrame().mouseY;
+		fontSize = getBestFontSize(graphics.getFont(), graphics2D);
+		if(maxFontSize > -1 && fontSize > maxFontSize) {
+			fontSize = maxFontSize;
+		}
 		Font f = graphics.getFont().deriveFont(
 				Font.PLAIN,
-				getBestFontSize(graphics.getFont(),
-						graphics2D));
+				fontSize);
 		graphics2D.setFont(f);
 
-		int trueX = DrawingTools.getTrueX(x, width, alignX);
-		int trueY = DrawingTools.getTrueY(y, height, alignY);
+		int trueX = getTrueX();
+		int trueY = getTrueY();
 		//check bounds
 		if (!lmbDown && graphics.getFrame().clicking()) {
 			clickStart = new Point(mouseX, mouseY);
@@ -153,5 +150,13 @@ public class ButtonElement extends Element {
 
 	public void setTextColor(Color textColor) {
 		this.textColor = textColor;
+	}
+
+	public void setMaxFontSize(int maxFontSize) {
+		this.maxFontSize = maxFontSize;
+	}
+
+	public int getFontSize() {
+		return fontSize;
 	}
 }

@@ -54,6 +54,7 @@ public class GameWindow extends Graphics {
 	 * Visible in the gamemode selection screen, will call {@link GameWindow#pushWindow(Window) pushWindow} with {@link Window#LOAD} when clicked.
 	 */
 	private ButtonElement bLoadPuzzle;
+	private ButtonElement bPause;
 	/**
 	 * Visible on the main menu, will quit the game when clicked.
 	 */
@@ -74,6 +75,7 @@ public class GameWindow extends Graphics {
 	 * should be added to this list with a specific Window, and can be added to multiple <code>Window</code>s.
 	 */
 	private ElementList elements_by_window;
+	private GridElement puzzleGrid;
 	private int puzzleSizeX;
 	private int puzzleSizeY;
 	private KeyListener keyListener;
@@ -416,10 +418,21 @@ public class GameWindow extends Graphics {
 			bGeneratePuzzle.setY(height - 7);
 		});
 		bGeneratePuzzle.setClickListener(() -> {
-			GridElement grid = new GridElement(new int[]{puzzleSizeX, puzzleSizeY}, this);
-			grid.generate();
+			puzzleGrid = new GridElement(new int[]{puzzleSizeX, puzzleSizeY}, this);
+			puzzleGrid.generate();
+			elements_by_window.add(puzzleGrid, Window.GAME);
+			pushWindow(Window.GAME);
 		});
 		elements_by_window.add(bGeneratePuzzle, Window.SIZE);
+		
+		bPause = new ButtonElement(this);
+		bPause.setText("Pause");
+		bPause.setColor(yellow);
+		bPause.setWidth(80);
+		bPause.setHeight(80);
+		bPause.setX(55);
+		bPause.setY(WINDOW_BAR_HEIGHT + 55);
+		elements_by_window.add(bPause, Window.GAME);
 	}
 
 	@Override

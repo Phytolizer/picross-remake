@@ -48,6 +48,10 @@ public class Clue {
 		return out.toString();
 	}
 
+	public int[] getRawClue() {
+		return clue;
+	}
+
 	public void refresh() {
 		clue = createClue(line);
 	}

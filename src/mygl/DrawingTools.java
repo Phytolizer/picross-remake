@@ -36,8 +36,21 @@ public class DrawingTools {
 	 * @param art canvas to paint final string
 	 */
 	public static void drawRightText(Font f, String s, int x, int y, Graphics2D art) {
+		art.setFont(f);
 		int len = art.getFontMetrics(f).stringWidth(s);
 		art.drawString(s, x - len - 10, y);
+	}
+
+	public static void drawText(Font f, String s, int x, int y, Align alignX, Align alignY, Graphics2D graphics2D) {
+		graphics2D.setFont(f);
+		FontMetrics fm = graphics2D.getFontMetrics(f);
+		Rectangle2D bounds = fm.getStringBounds(s, graphics2D);
+		double height = bounds.getHeight();
+		double width = bounds.getWidth();
+		int newX = getTrueX(x, (int)width, alignX);
+		int newY = getStringTrueY(y, (int)height, alignY);
+		newY -= fm.getDescent() * 3 / 4;
+		graphics2D.drawString(s, newX, newY);
 	}
 
 	public static void drawTextAround(Font f, String str, int x, int y, Graphics2D g2d) {
@@ -177,6 +190,24 @@ public class DrawingTools {
 				break;
 			case BOTTOM:
 				newY = y - height;
+				break;
+			default:
+				throw new IllegalArgumentException("Cannot use Align." + align.toString() + " for vertical position");
+		}
+		return newY;
+	}
+
+	public static int getStringTrueY(int y, int height, Align align) {
+		int newY;
+		switch(align) {
+			case TOP:
+				newY = y + height;
+				break;
+			case CENTER_VERTICAL:
+				newY = y + height / 2;
+				break;
+			case BOTTOM:
+				newY = y;
 				break;
 			default:
 				throw new IllegalArgumentException("Cannot use Align." + align.toString() + " for vertical position");

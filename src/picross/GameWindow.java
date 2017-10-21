@@ -420,11 +420,19 @@ public class GameWindow extends Graphics {
 		bGeneratePuzzle.setClickListener(() -> {
 			puzzleGrid = new GridElement(new int[]{puzzleSizeX, puzzleSizeY}, this);
 			puzzleGrid.generate();
+			puzzleGrid.setAlignX(Align.LEFT);
+			puzzleGrid.setAlignY(Align.TOP);
+			puzzleGrid.setOnUpdateAction(() -> {
+				puzzleGrid.setWidth(width - (80 + 55 + 40 + 80));
+				puzzleGrid.setX(80 + 55 + 40);
+				puzzleGrid.setHeight(height - 80 - WINDOW_BAR_HEIGHT - 55 - 40);
+				puzzleGrid.setY(WINDOW_BAR_HEIGHT + 40);
+			});
 			elements_by_window.add(puzzleGrid, Window.GAME);
 			pushWindow(Window.GAME);
 		});
 		elements_by_window.add(bGeneratePuzzle, Window.SIZE);
-		
+
 		bPause = new ButtonElement(this);
 		bPause.setText("Pause");
 		bPause.setColor(yellow);
@@ -432,6 +440,7 @@ public class GameWindow extends Graphics {
 		bPause.setHeight(80);
 		bPause.setX(55);
 		bPause.setY(WINDOW_BAR_HEIGHT + 55);
+		bPause.setClickListener(this::popWindow);
 		elements_by_window.add(bPause, Window.GAME);
 	}
 

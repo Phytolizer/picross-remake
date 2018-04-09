@@ -4,5 +4,5 @@ package mygl;
  * @author onContentStop
  */
 public enum MotionMode {
-	LINEAR, EXPONENTIAL, LOGISTIC, CIRCLE_QUADRANT, QUADRATIC
+    LINEAR, EXPONENTIAL, LOGISTIC, CIRCLE_QUADRANT, QUADRATIC
 }

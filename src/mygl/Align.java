@@ -10,8 +10,8 @@ package mygl;
  * <code>BOTTOM</code> should make <code>y</code> refer to the y-coordinate of the bottommost extreme of the object.
  */
 public enum Align {
-	//horizontal
-	LEFT, CENTER_HORIZONTAL, RIGHT,
-	//vertical
-	TOP, CENTER_VERTICAL, BOTTOM
+    //horizontal
+    LEFT, CENTER_HORIZONTAL, RIGHT,
+    //vertical
+    TOP, CENTER_VERTICAL, BOTTOM
 }

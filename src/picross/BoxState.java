@@ -1,5 +1,5 @@
 package picross;
 
 public enum BoxState {
-	EMPTY, CORRECT, INCORRECT, MARKED
+    EMPTY, CORRECT, INCORRECT, MARKED
 }

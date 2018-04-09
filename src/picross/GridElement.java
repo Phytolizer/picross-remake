@@ -12,9 +12,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Random;
+import java.util.*;
 import java.util.List;
-import java.util.ArrayList;
 
 import static java.awt.Color.*;
 
@@ -34,6 +33,7 @@ public class GridElement extends Element {
     private int verticalClueHeight = 0;
     private int solutionCorrectRemaining;
     private float clueFontSize = 12;
+    private Point lastMarked;
 
     public GridElement(int[] size, Graphics graphics) {
         super(graphics);
@@ -61,6 +61,7 @@ public class GridElement extends Element {
                 Box[] row = solution[i1];
                 col[i1] = row[i];
             }
+            Collections.reverse(Arrays.asList(col));
             colClues[i] = new Clue(col, ClueType.COL);
         }
         gridWidth = 0;
@@ -106,7 +107,7 @@ public class GridElement extends Element {
                         System.out.println(" (not uniquely solvable)");
                 }
             } while (numSolutions != 1);
-            if(!new File("clues.nin").delete()) {
+            if (!new File("clues.nin").delete()) {
                 throw new IOException("Could not delete clues.nin, is it write-protected?");
             }
         } catch (IOException e) {
@@ -300,26 +301,72 @@ public class GridElement extends Element {
     }
 
     public Boolean checkAndReveal(int x, int y) {
-        if (!(x >= 0 && x < sizeX && y >= 0 && y < sizeY)) {
+        if (!checkBoxBounds(x, y)) {
             throw new IndexOutOfBoundsException("Given coordinates are outside the bounds of the grid!");
         }
-        Box solutionBox = solution[x][y];
-        Box puzzleBox = contents[x][y];
-        if(puzzleBox.getState() == BoxState.MARKED) {
+        if (!canMark(x, y)) {
+            return null;
+        }
+        Box solutionBox = solution[y][x];
+        Box puzzleBox = contents[y][x];
+        if (puzzleBox.getState() == BoxState.MARKED) {
             puzzleBox.setState(BoxState.EMPTY);
+            lastMarked = new Point(x, y);
             return null;
         }
-        if(puzzleBox.getState() == BoxState.CORRECT || puzzleBox.getState() == BoxState.INCORRECT) {
+        if (puzzleBox.getState() == BoxState.CORRECT || puzzleBox.getState() == BoxState.INCORRECT) {
             return null;
         }
-        if(solutionBox.getState() == BoxState.CORRECT) {
+        if (solutionBox.getState() == BoxState.CORRECT) {
             puzzleBox.setState(BoxState.CORRECT);
+            lastMarked = new Point(x, y);
             return true;
         }
+        puzzleBox.setState(BoxState.INCORRECT);
+        lastMarked = new Point(x, y);
         return false;
     }
 
     public Boolean checkAndReveal(Point pt) {
         return checkAndReveal(pt.x, pt.y);
+    }
+
+    public void mark(int x, int y) {
+        if (!checkBoxBounds(x, y)) {
+            throw new IndexOutOfBoundsException("Given coordinates are outside the bounds of the grid!");
+        }
+        Box boxToMark = contents[y][x];
+        BoxState currState = boxToMark.getState();
+        if (currState == BoxState.CORRECT || currState == BoxState.INCORRECT) {
+            return;
+        }
+        if (canMark(x, y)) {
+            boxToMark.setState(currState == BoxState.EMPTY ? BoxState.MARKED : BoxState.EMPTY);
+        }
+        lastMarked = new Point(x, y);
+    }
+
+    public void mark(Point pt) {
+        mark(pt.x, pt.y);
+    }
+
+    public void allowMark() {
+        lastMarked = null;
+    }
+
+    public boolean canMark(int x, int y) {
+        return lastMarked == null || !lastMarked.equals(new Point(x, y));
+    }
+
+    public boolean canMark(Point pt) {
+        return canMark(pt.x, pt.y);
+    }
+
+    public boolean checkBoxBounds(int x, int y) {
+        return x >= 0 && x < sizeX && y >= 0 && y < sizeY;
+    }
+
+    public boolean checkBoxBounds(Point pt) {
+        return checkBoxBounds(pt.x, pt.y);
     }
 }

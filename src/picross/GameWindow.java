@@ -434,16 +434,26 @@ public class GameWindow extends Graphics {
                 puzzleGrid.setX(80 + 55 + 40);
                 puzzleGrid.setHeight(height - 80 - WINDOW_BAR_HEIGHT - 55 - 40);
                 puzzleGrid.setY(WINDOW_BAR_HEIGHT + 40);
-                if(frame.clicking() && puzzleGrid.isInBounds(frame.mouseX, frame.mouseY, puzzleGrid.getTrueX(), puzzleGrid.getTrueY())) {
-                    Point boxLoc = puzzleGrid.convertToBoxCoords(frame.mouseX, frame.mouseY);
-                    Boolean result = puzzleGrid.checkAndReveal(boxLoc);
-                    if(result != null && !result) {
-                        try {
-                            mistakeCounter.addMistake();
-                        } catch (GameOverException e) {
-                            pushWindow(Window.LOSE);
-                            gameTimer.reset();
+                Point boxLoc = puzzleGrid.convertToBoxCoords(frame.mouseX, frame.mouseY);
+                if (puzzleGrid.checkBoxBounds(boxLoc)) {
+                    if (frame.clicking()) {
+                        if (frame.getMouseButton() == 1) {
+                            Boolean result = puzzleGrid.checkAndReveal(boxLoc);
+                            if (result != null) {
+                                if (!result) {
+                                    try {
+                                        mistakeCounter.addMistake();
+                                    } catch (GameOverException e) {
+                                        pushWindow(Window.LOSE);
+                                        gameTimer.reset();
+                                    }
+                                }
+                            }
+                        } else if (frame.getMouseButton() == 3) {
+                            puzzleGrid.mark(boxLoc);
                         }
+                    } else if(!puzzleGrid.canMark(boxLoc)) {
+                        puzzleGrid.allowMark();
                     }
                 }
             });
@@ -489,7 +499,7 @@ public class GameWindow extends Graphics {
         mistakeCounter.setOnUpdateAction(() -> {
             mistakeCounter.setX(width - 80);
             mistakeCounter.setY(height - 80 - 55 / 2);
-            if(puzzleGrid.getWidth() < MISTAKE_COUNTER_DEFAULT_WIDTH) {
+            if (puzzleGrid.getWidth() < MISTAKE_COUNTER_DEFAULT_WIDTH) {
                 mistakeCounter.setWidth(puzzleGrid.getWidth());
             } else {
                 mistakeCounter.setWidth(MISTAKE_COUNTER_DEFAULT_WIDTH);
@@ -507,7 +517,7 @@ public class GameWindow extends Graphics {
         bExit.setOnUpdateAction(() -> bExit.setY(height / 2));
         bExit.setClickListener(() -> {
             gameTimer.reset();
-            while(currWindow != Window.MAIN) {
+            while (currWindow != Window.MAIN) {
                 popWindow();
             }
         });

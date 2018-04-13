@@ -94,6 +94,7 @@ public class GameWindow extends Graphics {
     private Stack<Window> windowStack;
     private TextElement theLetterX;
     private TextElement timerDisplay;
+    private TextElement timerDisplayFinal;
     private TextElement xSize;
     private TextElement ySize;
     private Thread timerThread;
@@ -535,9 +536,22 @@ public class GameWindow extends Graphics {
             while(windowStack.peek() != Window.MAIN) {
                 popWindow();
             }
+            timerDisplay.deregister();
             initPuzzle();
         });
         elements_by_window.add(bRetryWin, Window.WIN);
+
+        timerDisplayFinal = new TextElement(this);
+        timerDisplayFinal.setAlignX(Align.CENTER_HORIZONTAL);
+        timerDisplayFinal.setAlignY(Align.CENTER_VERTICAL);
+        timerDisplayFinal.setWidth(width);
+        timerDisplayFinal.setHeight(60);
+        timerDisplayFinal.setOnUpdateAction(() -> {
+            timerDisplayFinal.setText("Final Time: " + gameTimer.toString(true));
+            timerDisplayFinal.setX(width / 2);
+            timerDisplayFinal.setY((int) (height * 0.4));
+        });
+        elements_by_window.add(timerDisplayFinal, Window.WIN);
     }
 
     private void initPuzzle() {
@@ -548,8 +562,8 @@ public class GameWindow extends Graphics {
         puzzleGrid.setAlignY(Align.TOP);
         puzzleGrid.setOnUpdateAction(() -> {
             if (puzzleGrid.getRemaining() == 0) {
+                gameTimer.pause();
                 pushWindow(Window.WIN);
-                gameTimer.reset();
                 puzzleGrid.deregister();
                 timerDisplay.deregister();
             }

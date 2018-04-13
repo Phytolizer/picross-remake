@@ -32,6 +32,8 @@ public class GridElement extends Element {
     private int horizontalClueWidth = 0;
     private int verticalClueHeight = 0;
     private int solutionCorrectRemaining;
+    private int[] rowCorrectRemaining;
+    private int[] colCorrectRemaining;
     private float clueFontSize = 12;
     private Point lastMarked;
 
@@ -118,6 +120,27 @@ public class GridElement extends Element {
             for(Box b : r) {
                 if(b.getState() == BoxState.CORRECT) {
                     solutionCorrectRemaining++;
+                }
+            }
+        }
+        // sizeY and sizeX are the number of rows and number of columns, respectively.
+        rowCorrectRemaining = new int[sizeY];
+        colCorrectRemaining = new int[sizeX];
+        //iterate over rows
+        for(int i = 0; i < solution.length; i++) {
+            //iterate over columns in row
+            rowCorrectRemaining[i] = 0;
+            for(int j = 0; j < solution[i].length; j++) {
+                // i is the current row
+                // j is the current column
+                if(i == 0) {
+                    //only initialize this once so it is not overwritten
+                    colCorrectRemaining[j] = 0;
+                }
+                if(solution[i][j].getState() == BoxState.CORRECT) {
+                    //add 1 to each
+                    rowCorrectRemaining[i]++;
+                    colCorrectRemaining[j]++;
                 }
             }
         }
@@ -332,6 +355,26 @@ public class GridElement extends Element {
             puzzleBox.setState(BoxState.CORRECT);
             lastMarked = new Point(x, y);
             solutionCorrectRemaining--;
+            rowCorrectRemaining[y]--;
+            colCorrectRemaining[x]--;
+            if(rowCorrectRemaining[y] == 0) {
+                // fill row with X's
+                for(int i = 0; i < sizeX; i++) {
+                    Box boxInRow = contents[y][i];
+                    if(boxInRow.getState() == BoxState.EMPTY) {
+                        boxInRow.setState(BoxState.MARKED);
+                    }
+                }
+            }
+            if(colCorrectRemaining[x] == 0) {
+                //fill column with X's
+                for(int i = 0; i < sizeY; i++) {
+                    Box boxInCol = contents[i][x];
+                    if(boxInCol.getState() == BoxState.EMPTY) {
+                        boxInCol.setState(BoxState.MARKED);
+                    }
+                }
+            }
             return true;
         }
         puzzleBox.setState(BoxState.INCORRECT);
@@ -367,7 +410,9 @@ public class GridElement extends Element {
     }
 
     public boolean canMark(int x, int y) {
-        return lastMarked == null || !lastMarked.equals(new Point(x, y));
+        boolean returned = rowCorrectRemaining[y] > 0 && colCorrectRemaining[x] > 0;
+        returned = returned && (lastMarked == null || !lastMarked.equals(new Point(x, y)));
+        return returned;
     }
 
     public boolean canMark(Point pt) {

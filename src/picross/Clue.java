@@ -28,6 +28,9 @@ public class Clue {
         if (streak > 0) {
             out.add(streak);
         }
+        if(out.size() == 0) {
+            out.add(0);
+        }
         return out.stream().mapToInt(i -> i).toArray();
     }
 

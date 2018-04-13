@@ -50,4 +50,8 @@ public class MistakeCounterElement extends Element {
             throw new GameOverException("Player made too many mistakes");
         }
     }
+
+    public void reset() {
+        numMistakes = 0;
+    }
 }

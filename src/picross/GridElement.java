@@ -57,11 +57,11 @@ public class GridElement extends Element {
         colClues = new Clue[sizeX];
         for (int i = 0; i < colClues.length; i++) {
             Box[] col = new Box[solution.length];
-            for (int i1 = 0; i1 < solution.length; i1++) {
-                Box[] row = solution[i1];
-                col[i1] = row[i];
+            for (int j = 0; j < solution.length; j++) {
+                Box[] row = solution[j];
+                col[j] = row[i];
             }
-            Collections.reverse(Arrays.asList(col));
+            //Collections.reverse(Arrays.asList(col));
             colClues[i] = new Clue(col, ClueType.COL);
         }
         gridWidth = 0;
@@ -113,6 +113,14 @@ public class GridElement extends Element {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        solutionCorrectRemaining = 0;
+        for(Box[] r : solution) {
+            for(Box b : r) {
+                if(b.getState() == BoxState.CORRECT) {
+                    solutionCorrectRemaining++;
+                }
+            }
+        }
     }
 
     public void generate(File file) {
@@ -141,7 +149,7 @@ public class GridElement extends Element {
             int currentXPos = x + horizontalClueWidth + gridXOffset + (int) (squareWidth / 2 + squareWidth * i);
             for (int j = 0; j < colClues[i].getRawClue().length; j++) {
                 int currentYPos = y + verticalClueHeight + gridYOffset - fm.getHeight() * j;
-                DrawingTools.drawText(graphics.getFont().deriveFont(clueFontSize), Integer.toString(colClues[i].getRawClue()[j]), currentXPos, currentYPos, Align.CENTER_HORIZONTAL, Align.BOTTOM, graphics2D);
+                DrawingTools.drawText(graphics.getFont().deriveFont(clueFontSize), Integer.toString(colClues[i].getRawClue()[colClues[i].getRawClue().length - j - 1]), currentXPos, currentYPos, Align.CENTER_HORIZONTAL, Align.BOTTOM, graphics2D);
             }
         }
         //fill squares based on their state
@@ -194,25 +202,28 @@ public class GridElement extends Element {
         Point mouseSquareCoords = convertToBoxCoords(mouseX, mouseY);
         int mouseSquareX = mouseSquareCoords.x;
         int mouseSquareY = mouseSquareCoords.y;
-        graphics.getFrame().setTitle(String.format("(%1$d, %2$d)", mouseSquareX, mouseSquareY));
-        boolean rowShade = mouseSquareY >= 0 && mouseSquareY < sizeY;
-        boolean colShade = mouseSquareX >= 0 && mouseSquareX < sizeX;
-        if (rowShade) {
+        //use current cursor location as title
+        //graphics.getFrame().setTitle(String.format("(%1$d, %2$d)", mouseSquareX, mouseSquareY));
+        boolean shadeRow = mouseSquareY >= 0 && mouseSquareY < sizeY;
+        boolean shadeCol = mouseSquareX >= 0 && mouseSquareX < sizeX;
+        if (shadeRow) {
             for (int i = 0; i < sizeX; i++) {
                 int currentSquareX = x + horizontalClueWidth + gridXOffset + (int) (squareWidth * i);
                 int currentSquareY = y + verticalClueHeight + gridYOffset + (int) (squareWidth * mouseSquareY);
+                int accurateSquareWidthX = (int) (squareWidth * (i + 1)) - (int) (squareWidth * i);
+                int accurateSquareWidthY = (int) (squareWidth * (mouseSquareY + 1)) - (int) (squareWidth * mouseSquareY);
                 if (i == mouseSquareX) {
                     graphics2D.setColor(new Color(0, 0, 0, 64));
                     //noinspection SuspiciousNameCombination
-                    DrawingTools.fillRect(currentSquareX, currentSquareY, squareWidth, squareWidth, Align.LEFT, Align.TOP, graphics2D);
+                    DrawingTools.fillRect(currentSquareX, currentSquareY, accurateSquareWidthX, accurateSquareWidthY, Align.LEFT, Align.TOP, graphics2D);
                 } else {
                     graphics2D.setColor(new Color(0, 0, 0, 32));
                     //noinspection SuspiciousNameCombination
-                    DrawingTools.fillRect(currentSquareX + 1, currentSquareY + 1, squareWidth, squareWidth, Align.LEFT, Align.TOP, graphics2D);
+                    DrawingTools.fillRect(currentSquareX, currentSquareY, accurateSquareWidthX, accurateSquareWidthY, Align.LEFT, Align.TOP, graphics2D);
                 }
             }
         }
-        if (colShade) {
+        if (shadeCol) {
             for (int i = 0; i < sizeY; i++) {
                 int currentSquareX = x + horizontalClueWidth + gridXOffset + (int) (squareWidth * mouseSquareX);
                 int currentSquareY = y + verticalClueHeight + gridYOffset + (int) (squareWidth * i);
@@ -320,6 +331,7 @@ public class GridElement extends Element {
         if (solutionBox.getState() == BoxState.CORRECT) {
             puzzleBox.setState(BoxState.CORRECT);
             lastMarked = new Point(x, y);
+            solutionCorrectRemaining--;
             return true;
         }
         puzzleBox.setState(BoxState.INCORRECT);
@@ -368,5 +380,9 @@ public class GridElement extends Element {
 
     public boolean checkBoxBounds(Point pt) {
         return checkBoxBounds(pt.x, pt.y);
+    }
+
+    public int getRemaining() {
+        return solutionCorrectRemaining;
     }
 }

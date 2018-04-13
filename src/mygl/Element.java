@@ -119,4 +119,9 @@ public class Element {
     public int getTrueY() {
         return DrawingTools.getTrueY(y, height, alignY);
     }
+
+    //TODO good name for this???
+    public void deregister() {
+        Elements.remove(this);
+    }
 }

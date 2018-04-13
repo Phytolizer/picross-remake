@@ -65,6 +65,8 @@ public class GameWindow extends Graphics {
      */
     private ButtonElement bRandomPuzzle;
     private ButtonElement bResume;
+    private ButtonElement bRetry;
+    private ButtonElement bRetryWin;
     /**
      * Visible in the main menu, will call {@link GameWindow#pushWindow(Window) pushWindow} with {@link Window#GAMEMODE} when clicked.
      * <br/>
@@ -424,57 +426,7 @@ public class GameWindow extends Graphics {
             bGeneratePuzzle.setX(width / 2);
             bGeneratePuzzle.setY(height - 7);
         });
-        bGeneratePuzzle.setClickListener(() -> {
-            puzzleGrid = new GridElement(new int[]{puzzleSizeX, puzzleSizeY}, this);
-            puzzleGrid.generate();
-            puzzleGrid.setAlignX(Align.LEFT);
-            puzzleGrid.setAlignY(Align.TOP);
-            puzzleGrid.setOnUpdateAction(() -> {
-                puzzleGrid.setWidth(width - (80 + 55 + 40 + 80));
-                puzzleGrid.setX(80 + 55 + 40);
-                puzzleGrid.setHeight(height - 80 - WINDOW_BAR_HEIGHT - 55 - 40);
-                puzzleGrid.setY(WINDOW_BAR_HEIGHT + 40);
-                Point boxLoc = puzzleGrid.convertToBoxCoords(frame.mouseX, frame.mouseY);
-                if (puzzleGrid.checkBoxBounds(boxLoc)) {
-                    if (frame.clicking()) {
-                        if (frame.getMouseButton() == 1) {
-                            Boolean result = puzzleGrid.checkAndReveal(boxLoc);
-                            if (result != null) {
-                                if (!result) {
-                                    try {
-                                        mistakeCounter.addMistake();
-                                    } catch (GameOverException e) {
-                                        pushWindow(Window.LOSE);
-                                        gameTimer.reset();
-                                    }
-                                }
-                            }
-                        } else if (frame.getMouseButton() == 3) {
-                            puzzleGrid.mark(boxLoc);
-                        }
-                    } else if(!puzzleGrid.canMark(boxLoc)) {
-                        puzzleGrid.allowMark();
-                    }
-                }
-            });
-            elements_by_window.add(puzzleGrid, Window.GAME);
-            gameTimer = new Timer();
-            gameTimer.begin();
-            timerThread = new Thread(gameTimer);
-            timerDisplay = new TextElement(this);
-            timerDisplay.setAlignX(Align.RIGHT);
-            timerDisplay.setAlignY(Align.BOTTOM);
-            timerDisplay.setWidth(200);
-            timerDisplay.setHeight(30);
-            timerDisplay.setOnUpdateAction(() -> {
-                timerDisplay.setX(width - 10);
-                timerDisplay.setY(height - 10);
-                timerDisplay.setText(gameTimer.toString(false));
-            });
-            elements_by_window.add(timerDisplay, Window.GAME);
-            pushWindow(Window.GAME);
-            timerThread.start();
-        });
+        bGeneratePuzzle.setClickListener(this::initPuzzle);
         elements_by_window.add(bGeneratePuzzle, Window.SIZE);
 
         bPause = new ButtonElement(this);
@@ -517,11 +469,15 @@ public class GameWindow extends Graphics {
         bExit.setOnUpdateAction(() -> bExit.setY(height / 2));
         bExit.setClickListener(() -> {
             gameTimer.reset();
+            puzzleGrid.deregister();
+            timerDisplay.deregister();
             while (currWindow != Window.MAIN) {
                 popWindow();
             }
         });
         elements_by_window.add(bExit, Window.PAUSE);
+        elements_by_window.add(bExit, Window.LOSE);
+        elements_by_window.add(bExit, Window.WIN);
 
         bResume = new ButtonElement(this);
         Element[] pauseMenuButtons = {bResume, bExit};
@@ -541,6 +497,108 @@ public class GameWindow extends Graphics {
             gameTimer.resume();
         });
         elements_by_window.add(bResume, Window.PAUSE);
+
+        bRetry = new ButtonElement(this);
+        Element[] loseMenuButtons = {bRetry, bExit};
+        bRetry.setText("Try Again");
+        bRetry.setColor(green);
+        bRetry.setWidth(200);
+        bRetry.setHeight(60);
+        bRetry.setAlignX(Align.LEFT);
+        bRetry.setAlignY(Align.CENTER_VERTICAL);
+        bRetry.setOnUpdateAction(() -> {
+            //bRetry.setX(width / 2);
+            bRetry.setY(height / 2);
+            Elements.centerAndSpaceElements(loseMenuButtons, 200, 40, width - 40, 20, Axis.HORIZONTAL);
+        });
+        bRetry.setClickListener(() -> {
+            while(windowStack.peek() != Window.MAIN) {
+                popWindow();
+            }
+            initPuzzle();
+        });
+        elements_by_window.add(bRetry, Window.LOSE);
+
+        bRetryWin = new ButtonElement(this);
+        Element[] winMenuButtons = {bRetryWin, bExit};
+        bRetryWin.setText("Another!");
+        bRetryWin.setColor(green);
+        bRetryWin.setWidth(200);
+        bRetryWin.setHeight(60);
+        bRetryWin.setAlignX(Align.LEFT);
+        bRetryWin.setAlignY(Align.CENTER_VERTICAL);
+        bRetryWin.setOnUpdateAction(() -> {
+            bRetryWin.setY(height / 2);
+            Elements.centerAndSpaceElements(winMenuButtons, 200, 40, width - 40, 20, Axis.HORIZONTAL);
+        });
+        bRetryWin.setClickListener(() -> {
+            while(windowStack.peek() != Window.MAIN) {
+                popWindow();
+            }
+            initPuzzle();
+        });
+        elements_by_window.add(bRetryWin, Window.WIN);
+    }
+
+    private void initPuzzle() {
+        mistakeCounter.reset();
+        puzzleGrid = new GridElement(new int[]{puzzleSizeX, puzzleSizeY}, this);
+        puzzleGrid.generate();
+        puzzleGrid.setAlignX(Align.LEFT);
+        puzzleGrid.setAlignY(Align.TOP);
+        puzzleGrid.setOnUpdateAction(() -> {
+            if (puzzleGrid.getRemaining() == 0) {
+                pushWindow(Window.WIN);
+                gameTimer.reset();
+                puzzleGrid.deregister();
+                timerDisplay.deregister();
+            }
+            puzzleGrid.setWidth(width - (80 + 55 + 40 + 80));
+            puzzleGrid.setX(80 + 55 + 40);
+            puzzleGrid.setHeight(height - 80 - WINDOW_BAR_HEIGHT - 55 - 40);
+            puzzleGrid.setY(WINDOW_BAR_HEIGHT + 40);
+            Point boxLoc = puzzleGrid.convertToBoxCoords(frame.mouseX, frame.mouseY);
+            if (puzzleGrid.checkBoxBounds(boxLoc)) {
+                if (frame.clicking()) {
+                    if (frame.getMouseButton() == 1) {
+                        Boolean result = puzzleGrid.checkAndReveal(boxLoc);
+                        if (result != null) {
+                            if (!result) {
+                                try {
+                                    mistakeCounter.addMistake();
+                                } catch (GameOverException e) {
+                                    pushWindow(Window.LOSE);
+                                    gameTimer.reset();
+                                    puzzleGrid.deregister();
+                                    timerDisplay.deregister();
+                                }
+                            }
+                        }
+                    } else if (frame.getMouseButton() == 3) {
+                        puzzleGrid.mark(boxLoc);
+                    }
+                } else if (!puzzleGrid.canMark(boxLoc)) {
+                    puzzleGrid.allowMark();
+                }
+            }
+        });
+        elements_by_window.add(puzzleGrid, Window.GAME);
+        gameTimer = new Timer();
+        gameTimer.begin();
+        timerThread = new Thread(gameTimer);
+        timerDisplay = new TextElement(this);
+        timerDisplay.setAlignX(Align.RIGHT);
+        timerDisplay.setAlignY(Align.BOTTOM);
+        timerDisplay.setWidth(200);
+        timerDisplay.setHeight(30);
+        timerDisplay.setOnUpdateAction(() -> {
+            timerDisplay.setX(width - 10);
+            timerDisplay.setY(height - 10);
+            timerDisplay.setText(gameTimer.toString(false));
+        });
+        elements_by_window.add(timerDisplay, Window.GAME);
+        pushWindow(Window.GAME);
+        timerThread.start();
     }
 
     @Override

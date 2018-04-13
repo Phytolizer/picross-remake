@@ -21,6 +21,10 @@ public class Elements {
         all_elements.add(e);
     }
 
+    public static void remove(Element e) {
+        all_elements.remove(e);
+    }
+
     public static void draw() {
         for (int i = 0; i < all_elements.size(); i++) {
             Element e = all_elements.get(i);

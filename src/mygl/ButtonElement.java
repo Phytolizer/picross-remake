@@ -71,20 +71,7 @@ public class ButtonElement extends Element {
     }
 
     private int getBestFontSize(Font f, Graphics2D context) {
-        int width = 0;
-        double fillProportion = 2d / 3d;
-        int i;
-        for (i = 1; width < fillProportion * this.width; i++) {
-            f = f.deriveFont(f.getStyle(), i);
-            FontMetrics fm = context.getFontMetrics(f);
-            width = fm.stringWidth(text);
-            if (width == 0)
-                return 0;
-        }
-        if (f.getSize() > height) {
-            return (int) (fillProportion * height);
-        }
-        return i;
+        return FontSize.getBestFontSize(width, height, text, f, context, 2d / 3d);
     }
 
     public void setText(String text) {

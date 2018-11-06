@@ -313,6 +313,8 @@ public class GameWindow extends Graphics {
 
         xSize = new TextElement(this);
         xSize.setText(Integer.toString(puzzleSizeX));
+        xSize.setAlignX(Align.CENTER_HORIZONTAL);
+        xSize.setAlignY(Align.CENTER_VERTICAL);
         xSize.setOnUpdateAction(() -> {
             xSize.setText(Integer.toString(puzzleSizeX));
             bIncSizeX.setVisible(puzzleSizeX < MAX_PUZZLE_SIZE);
@@ -359,6 +361,8 @@ public class GameWindow extends Graphics {
 
         theLetterX = new TextElement(this);
         theLetterX.setText("x");
+        theLetterX.setAlignX(Align.CENTER_HORIZONTAL);
+        theLetterX.setAlignY(Align.CENTER_VERTICAL);
         elements_by_window.add(theLetterX, Window.SIZE);
 
         bIncSizeY = new ButtonElement(this);
@@ -373,6 +377,8 @@ public class GameWindow extends Graphics {
 
         ySize = new TextElement(this);
         ySize.setText(Integer.toString(puzzleSizeY));
+        ySize.setAlignX(Align.CENTER_HORIZONTAL);
+        ySize.setAlignY(Align.CENTER_VERTICAL);
         ySize.setOnUpdateAction(() -> {
             ySize.setText(Integer.toString(puzzleSizeY));
             bIncSizeY.setVisible(puzzleSizeY < MAX_PUZZLE_SIZE);

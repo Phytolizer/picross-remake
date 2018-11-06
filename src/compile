@@ -1,1 +1,1 @@
-javac -d out/ bgusolver/*.java mygl/*.java picross/*.java && cd out && rm Picross.jar && jar cvef picross.Picross Picross.jar * && java -jar Picross.jar
+javac -d out/ bgusolver/*.java mygl/*.java picross/*.java; cd out; rm Picross.jar; jar cvef picross.Picross Picross.jar *; java -jar Picross.jar

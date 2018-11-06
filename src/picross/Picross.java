@@ -1,6 +1,5 @@
 package picross;
 
-import mygl.Background;
 import mygl.Timer;
 
 /**

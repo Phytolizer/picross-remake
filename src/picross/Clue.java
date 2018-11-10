@@ -5,8 +5,8 @@ import java.util.List;
 
 public class Clue {
     private int[] clue;
-    private ClueType clueType;
-    private Box[] line;
+    private final ClueType clueType;
+    private final Box[] line;
 
     public Clue(Box[] line, ClueType type) {
         clueType = type;
@@ -17,11 +17,11 @@ public class Clue {
     private int[] createClue(Box[] line) {
         List<Integer> out = new ArrayList<>();
         int streak = 0;
-        for (int i = 0; i < line.length; i++) {
-            if (line[i].getState() == BoxState.INCORRECT && streak > 0) {
+        for (Box aLine : line) {
+            if (aLine.getState() == BoxState.INCORRECT && streak > 0) {
                 out.add(streak);
                 streak = 0;
-            } else if (line[i].getState() == BoxState.CORRECT) {
+            } else if (aLine.getState() == BoxState.CORRECT) {
                 streak++;
             }
         }
@@ -37,7 +37,7 @@ public class Clue {
     public String getClue() {
         StringBuilder out = new StringBuilder();
         for (int c : clue) {
-            out.append("" + c + " ");
+            out.append(c).append(" ");
         }
         if (out.length() > 0)
             return out.toString().substring(0, out.length() - 1);
@@ -47,7 +47,7 @@ public class Clue {
     public String getFormattedClue() {
         StringBuilder out = new StringBuilder();
         for (int c : clue) {
-            out.append("" + c + (clueType == ClueType.ROW ? ' ' : '\n'));
+            out.append(c).append(clueType == ClueType.ROW ? ' ' : '\n');
         }
         return out.toString();
     }

@@ -49,7 +49,7 @@ public class RandomColorGenerator {
                 return colorList.get(0); //there's no randomness here, in fact the color doesn't even change. Just use a static color, you doofus.
             }
         } else if (colorList == null) {
-            Color testColor = null;
+            Color testColor;
             double luminance;
             do {
                 int r = (int) (Math.random() * 256);

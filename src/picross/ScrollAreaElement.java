@@ -1,7 +1,5 @@
 package picross;
 
-import mygl.BetterFrame;
-import mygl.DrawingTools;
 import mygl.Element;
 import mygl.Graphics;
 

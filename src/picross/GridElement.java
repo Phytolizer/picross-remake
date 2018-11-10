@@ -10,8 +10,6 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.List;
 
@@ -196,7 +194,7 @@ public class GridElement extends Element {
                         break;
                     case CORRECT:
                         graphics2D.setColor(green);
-                        graphics2D.fillRect(currentSquareX, currentSquareY, (int) accurateSquareWidthX, (int) accurateSquareWidthY);
+                        graphics2D.fillRect(currentSquareX, currentSquareY, accurateSquareWidthX, accurateSquareWidthY);
                         break;
                     case INCORRECT:
                         graphics2D.setColor(red);

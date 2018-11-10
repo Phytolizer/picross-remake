@@ -1,5 +1,5 @@
 package picross;
 
 public interface ScrollListener {
-    public void onScroll(int scrollAmt);
+    void onScroll(int scrollAmt);
 }

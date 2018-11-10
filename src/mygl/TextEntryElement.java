@@ -157,7 +157,7 @@ public class TextEntryElement extends Element {
     public void handleKey(KeyEvent e) {
         int keyCode = e.getKeyCode();
         char keyChar = e.getKeyChar();
-        String modifiers = KeyEvent.getKeyModifiersText(e.getModifiers());
+        String modifiers = KeyEvent.getModifiersExText(e.getModifiersEx());
 
         switch (keyCode) {
             case KeyEvent.VK_BACK_SPACE:

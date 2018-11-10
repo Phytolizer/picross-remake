@@ -1,7 +1,6 @@
 package mygl;
 
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.List;
 
 /**
@@ -11,8 +10,7 @@ public class Elements {
     private static List<Element> all_elements = new ArrayList<>();
 
     public static void update() {
-        for (int i = 0; i < all_elements.size(); i++) {
-            Element e = all_elements.get(i);
+        for (Element e : all_elements) {
             e.update();
         }
     }
@@ -26,8 +24,7 @@ public class Elements {
     }
 
     public static void draw() {
-        for (int i = 0; i < all_elements.size(); i++) {
-            Element e = all_elements.get(i);
+        for (Element e : all_elements) {
             if (e.isVisible()) {
                 e.draw();
             }

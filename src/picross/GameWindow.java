@@ -1,6 +1,5 @@
 package picross;
 
-import bgusolver.JCIndependantSolver;
 import mygl.*;
 import mygl.Graphics;
 
@@ -162,9 +161,7 @@ public class GameWindow extends Graphics {
         bStartGame = new ButtonElement(width / 2, height / 2, 200, menuButtonHeight, this); //Initializes the button with a position, size and graphics context.
         bStartGame.setText("Start Game"); //The text to display on the button goes here. The size of this text will be determined automatically by a process unknown to humankind.
         bStartGame.setColor(green); //This is the color that will be used on the background of the button, behind the text and inside the borders.
-        bStartGame.setClickListener(() -> {
-            pushWindow(Window.GAMEMODE);
-        });
+        bStartGame.setClickListener(() -> pushWindow(Window.GAMEMODE));
         bStartGame.setOnUpdateAction(() -> {
             ButtonElement[] menuButtons = {bStartGame, bLeaderboard, bCreator, bControls, bQuitGame};
             for (ButtonElement be : menuButtons) {
@@ -217,9 +214,7 @@ public class GameWindow extends Graphics {
         if (bLeaderboard.getFontSize() > 0) {
             bControls.setMaxFontSize(bLeaderboard.getFontSize());
         }
-        bControls.setClickListener(() -> {
-            pushWindow(Window.CONTROLS);
-        });
+        bControls.setClickListener(() -> pushWindow(Window.CONTROLS));
         elements_by_window.add(bControls, Window.MAIN);
 
         bQuitGame = new ButtonElement(0, 0, 200, menuButtonHeight, this);
@@ -261,20 +256,14 @@ public class GameWindow extends Graphics {
                 bLoadPuzzle.setMaxFontSize(bRandomPuzzle.getFontSize());
             }
         });
-        bRandomPuzzle.setClickListener(() -> {
-            pushWindow(Window.SIZE);
-        });
+        bRandomPuzzle.setClickListener(() -> pushWindow(Window.SIZE));
         elements_by_window.add(bRandomPuzzle, Window.GAMEMODE);
 
         bLoadPuzzle = new ButtonElement(0, 250, 200, 100, this);
         bLoadPuzzle.setText("Load Puzzle");
         bLoadPuzzle.setColor(green);
-        bLoadPuzzle.setOnUpdateAction(() -> {
-            bLoadPuzzle.setY(height / 2);
-        });
-        bLoadPuzzle.setClickListener(() -> {
-            pushWindow(Window.LOAD);
-        });
+        bLoadPuzzle.setOnUpdateAction(() -> bLoadPuzzle.setY(height / 2));
+        bLoadPuzzle.setClickListener(() -> pushWindow(Window.LOAD));
         elements_by_window.add(bLoadPuzzle, Window.GAMEMODE);
 
         bIncSizeX = new ButtonElement(this);

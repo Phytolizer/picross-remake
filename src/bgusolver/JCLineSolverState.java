@@ -4,54 +4,54 @@ package bgusolver;
  * saves the output of the line solver, for later use
  */
 public class JCLineSolverState {
-	
-	private int maxPos;
-	private byte[] line;
-	private byte[][] sol;
-	private boolean[][] memoized;
-	
-	public byte[] getLine() {
-		return line;
-	}
 
-	public void setLine(byte[] line) {
-		this.line = line;
-	}
+    private int maxPos;
+    private byte[] line;
+    private byte[][] sol;
+    private boolean[][] memoized;
 
-	public byte[][] getSol() {
-		return sol;
-	}
+    public byte[] getLine() {
+        return line;
+    }
 
-	public void setSol(byte[][] sol) {
-		this.sol = sol;
-	}
+    public void setLine(byte[] line) {
+        this.line = line;
+    }
 
-	public boolean[][] getMemoized() {
-		return memoized;
-	}
+    public byte[][] getSol() {
+        return sol;
+    }
 
-	public void setMemoized(boolean[][] memoized) {
-		this.memoized = memoized;
-	}
+    public void setSol(byte[][] sol) {
+        this.sol = sol;
+    }
 
-	public JCLineSolverState(byte[] line, byte[][] sol, boolean[][] memoized){
-		this.line = line;
-		this.sol = sol;
-		this.memoized = memoized;
-	}
-	
-	public void updateState(byte[] line, byte[][] sol, boolean[][] memoized){
-		this.line = line;
-		this.sol = sol;
-		this.memoized = memoized;
-	}
+    public boolean[][] getMemoized() {
+        return memoized;
+    }
 
-	public int getMaxPos() {
-		return maxPos;
-	}
+    public void setMemoized(boolean[][] memoized) {
+        this.memoized = memoized;
+    }
 
-	public void setMaxPos(int maxPos) {
-		this.maxPos = maxPos;
-	}
+    public JCLineSolverState(byte[] line, byte[][] sol, boolean[][] memoized) {
+        this.line = line;
+        this.sol = sol;
+        this.memoized = memoized;
+    }
+
+    public void updateState(byte[] line, byte[][] sol, boolean[][] memoized) {
+        this.line = line;
+        this.sol = sol;
+        this.memoized = memoized;
+    }
+
+    public int getMaxPos() {
+        return maxPos;
+    }
+
+    public void setMaxPos(int maxPos) {
+        this.maxPos = maxPos;
+    }
 
 }
